@@ -13,7 +13,6 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 
     <style>
-        /* Estilos personalizados para FullCalendar */
         .fc {
             font-family: 'Inter', sans-serif;
         }
@@ -93,13 +92,36 @@
             color: #f5f5f5 !important;
             background-color: #1a1a1a !important;
         }
+        .sidebar-link {
+            color: #888888;
+            border-left: 2px solid transparent;
+            display: block;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            color: #c9a96e;
+            border-left-color: #c9a96e;
+            background-color: rgba(201, 169, 110, 0.05);
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        .badge-pendiente { background: rgba(201,169,110,0.15); color: #c9a96e; }
+        .badge-confirmado { background: rgba(74,222,128,0.15); color: #4ade80; }
+        .badge-cancelado { background: rgba(248,113,113,0.15); color: #f87171; }
+        .badge-completado { background: rgba(96,165,250,0.15); color: #60a5fa; }
     </style>
 </head>
 <body class="bg-negro text-blanco min-h-screen">
 
-    <!-- Sidebar -->
     <div class="flex min-h-screen">
-        <aside class="w-64 bg-negro-suave border-r border-gris-medio flex flex-col fixed h-full z-40">
+
+        <!-- Sidebar -->
+        <aside style="width: 220px; min-width: 220px;" class="bg-negro-suave border-r border-gris-medio flex flex-col fixed h-full z-40">
 
             <!-- Logo -->
             <div class="p-8 border-b border-gris-medio">
@@ -112,26 +134,26 @@
             </div>
 
             <!-- Navegación -->
-            <nav class="flex-1 p-6 space-y-1">
-                <a href="#" onclick="mostrarSeccion('calendario')"
-                   class="sidebar-link active flex items-center gap-3 px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
-                    📅 Calendario
+            <nav class="flex-1 p-4 space-y-1">
+                <a href="#" onclick="mostrarSeccion('calendario', event)"
+                   class="sidebar-link active px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
+                    Calendario
                 </a>
-                <a href="#" onclick="mostrarSeccion('turnos')"
-                   class="sidebar-link flex items-center gap-3 px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
-                    📋 Turnos
+                <a href="#" onclick="mostrarSeccion('turnos', event)"
+                   class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
+                    Turnos
                 </a>
-                <a href="#" onclick="mostrarSeccion('servicios')"
-                   class="sidebar-link flex items-center gap-3 px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
-                    ✂️ Servicios
+                <a href="#" onclick="mostrarSeccion('servicios', event)"
+                   class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
+                    Servicios
                 </a>
-                <a href="#" onclick="mostrarSeccion('clientes')"
-                   class="sidebar-link flex items-center gap-3 px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
-                    👥 Clientes
+                <a href="#" onclick="mostrarSeccion('clientes', event)"
+                   class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
+                    Clientes
                 </a>
-                <a href="#" onclick="mostrarSeccion('estadisticas')"
-                   class="sidebar-link flex items-center gap-3 px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
-                    📊 Estadísticas
+                <a href="#" onclick="mostrarSeccion('estadisticas', event)"
+                   class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
+                    Estadisticas
                 </a>
             </nav>
 
@@ -142,23 +164,23 @@
                 <button onclick="logout()"
                     class="w-full text-xs tracking-widest uppercase text-gris-claro
                            hover:text-red-400 transition-colors text-left">
-                    Cerrar sesión →
+                    Cerrar sesion
                 </button>
             </div>
         </aside>
 
         <!-- Contenido principal -->
-        <main class="ml-64 flex-1 p-8">
+        <main style="margin-left: 220px;" class="flex-1 p-8 min-w-0 overflow-x-hidden">
 
-            <!-- ======= SECCIÓN CALENDARIO ======= -->
+            <!-- ======= SECCION CALENDARIO ======= -->
             <div id="seccion-calendario" class="seccion">
                 <div class="mb-8">
                     <p class="section-subtitle">Agenda</p>
                     <h1 class="font-serif text-3xl text-blanco">Calendario de Turnos</h1>
                 </div>
 
-                <!-- Stats rápidas -->
-                <div class="grid grid-cols-4 gap-4 mb-8">
+                <!-- Stats rapidas -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <div class="border border-gris-medio p-6 text-center">
                         <p id="stat-hoy" class="font-serif text-3xl text-dorado">0</p>
                         <p class="text-xs tracking-widest text-gris-claro uppercase mt-1">Hoy</p>
@@ -183,15 +205,15 @@
                 </div>
             </div>
 
-            <!-- ======= SECCIÓN TURNOS ======= -->
+            <!-- ======= SECCION TURNOS ======= -->
             <div id="seccion-turnos" class="seccion hidden">
                 <div class="flex justify-between items-start mb-8">
                     <div>
-                        <p class="section-subtitle">Gestión</p>
+                        <p class="section-subtitle">Gestion</p>
                         <h1 class="font-serif text-3xl text-blanco">Turnos</h1>
                     </div>
                 </div>
-                <div id="tabla-turnos" class="border border-gris-medio overflow-hidden">
+                <div class="border border-gris-medio overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead class="bg-gris-oscuro">
                             <tr>
@@ -210,21 +232,20 @@
                 </div>
             </div>
 
-            <!-- ======= SECCIÓN SERVICIOS ======= -->
+            <!-- ======= SECCION SERVICIOS ======= -->
             <div id="seccion-servicios" class="seccion hidden">
                 <div class="flex justify-between items-start mb-8">
                     <div>
-                        <p class="section-subtitle">Gestión</p>
+                        <p class="section-subtitle">Gestion</p>
                         <h1 class="font-serif text-3xl text-blanco">Servicios</h1>
                     </div>
-                    <button onclick="mostrarFormServicio()"
-                        class="btn-ghost">+ Nuevo Servicio</button>
+                    <button onclick="mostrarFormServicio()" class="btn-ghost">+ Nuevo Servicio</button>
                 </div>
 
                 <!-- Formulario nuevo servicio -->
                 <div id="form-servicio" class="hidden border border-dorado p-8 mb-8">
                     <p class="section-subtitle">Nuevo Servicio</p>
-                    <div class="grid grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Nombre</label>
                             <input type="text" id="serv-nombre"
@@ -236,12 +257,12 @@
                                 class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3 focus:outline-none focus:border-dorado transition-colors text-sm">
                         </div>
                         <div>
-                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Duración (minutos)</label>
+                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Duracion (minutos)</label>
                             <input type="number" id="serv-duracion"
                                 class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3 focus:outline-none focus:border-dorado transition-colors text-sm">
                         </div>
                         <div>
-                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Descripción</label>
+                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Descripcion</label>
                             <input type="text" id="serv-descripcion"
                                 class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3 focus:outline-none focus:border-dorado transition-colors text-sm">
                         </div>
@@ -252,13 +273,13 @@
                     </div>
                 </div>
 
-                <div id="tabla-servicios" class="border border-gris-medio overflow-hidden">
+                <div class="border border-gris-medio overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead class="bg-gris-oscuro">
                             <tr>
                                 <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Nombre</th>
-                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Descripción</th>
-                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Duración</th>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Descripcion</th>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Duracion</th>
                                 <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Precio</th>
                                 <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Acciones</th>
                             </tr>
@@ -270,19 +291,19 @@
                 </div>
             </div>
 
-            <!-- ======= SECCIÓN CLIENTES ======= -->
+            <!-- ======= SECCION CLIENTES ======= -->
             <div id="seccion-clientes" class="seccion hidden">
                 <div class="mb-8">
-                    <p class="section-subtitle">Gestión</p>
+                    <p class="section-subtitle">Gestion</p>
                     <h1 class="font-serif text-3xl text-blanco">Clientes</h1>
                 </div>
-                <div class="border border-gris-medio overflow-hidden">
+                <div class="border border-gris-medio overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead class="bg-gris-oscuro">
                             <tr>
                                 <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Nombre</th>
                                 <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Email</th>
-                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Teléfono</th>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Telefono</th>
                                 <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Registro</th>
                             </tr>
                         </thead>
@@ -293,14 +314,14 @@
                 </div>
             </div>
 
-            <!-- ======= SECCIÓN ESTADÍSTICAS ======= -->
+            <!-- ======= SECCION ESTADISTICAS ======= -->
             <div id="seccion-estadisticas" class="seccion hidden">
                 <div class="mb-8">
                     <p class="section-subtitle">Resumen</p>
-                    <h1 class="font-serif text-3xl text-blanco">Estadísticas</h1>
+                    <h1 class="font-serif text-3xl text-blanco">Estadisticas</h1>
                 </div>
-                <div id="contenido-estadisticas" class="grid grid-cols-2 gap-6">
-                    <p class="text-gris-claro col-span-2">Cargando estadísticas...</p>
+                <div id="contenido-estadisticas" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <p class="text-gris-claro col-span-2">Cargando estadisticas...</p>
                 </div>
             </div>
 
@@ -312,36 +333,12 @@
         <div class="bg-negro-suave border border-gris-medio p-8 max-w-md w-full">
             <div class="flex justify-between items-start mb-6">
                 <p class="section-subtitle">Detalle del Turno</p>
-                <button onclick="cerrarModal()" class="text-gris-claro hover:text-blanco">✕</button>
+                <button onclick="cerrarModal()" class="text-gris-claro hover:text-blanco text-xl leading-none">x</button>
             </div>
             <div id="modal-contenido" class="space-y-4 text-sm"></div>
             <div id="modal-acciones" class="flex gap-3 mt-8 flex-wrap"></div>
         </div>
     </div>
-
-    <style>
-        .sidebar-link {
-            color: #888888;
-            border-left: 2px solid transparent;
-        }
-        .sidebar-link:hover, .sidebar-link.active {
-            color: #c9a96e;
-            border-left-color: #c9a96e;
-            background-color: rgba(201, 169, 110, 0.05);
-        }
-        .badge {
-            display: inline-block;
-            padding: 2px 10px;
-            font-size: 10px;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            font-weight: 500;
-        }
-        .badge-pendiente { background: rgba(201,169,110,0.15); color: #c9a96e; }
-        .badge-confirmado { background: rgba(74,222,128,0.15); color: #4ade80; }
-        .badge-cancelado { background: rgba(248,113,113,0.15); color: #f87171; }
-        .badge-completado { background: rgba(96,165,250,0.15); color: #60a5fa; }
-    </style>
 
     <script>
         const API_BASE = 'http://127.0.0.1:8000';
@@ -349,16 +346,13 @@
         let calendario = null;
         let turnoSeleccionado = null;
 
-        // Verificar autenticación
         if (!token) {
             window.location.href = '/admin/login';
         }
 
-        // Mostrar nombre del admin
         document.getElementById('admin-nombre').textContent =
             localStorage.getItem('admin_nombre') || 'Administrador';
 
-        // Headers con token
         function authHeaders() {
             return {
                 'Content-Type': 'application/json',
@@ -366,12 +360,13 @@
             };
         }
 
-        // ============ NAVEGACIÓN ============
-        function mostrarSeccion(nombre) {
+        // ============ NAVEGACION ============
+        function mostrarSeccion(nombre, event) {
+            if (event) event.preventDefault();
             document.querySelectorAll('.seccion').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
             document.getElementById(`seccion-${nombre}`).classList.remove('hidden');
-            event.target.classList.add('active');
+            if (event && event.target) event.target.classList.add('active');
 
             if (nombre === 'calendario') iniciarCalendario();
             if (nombre === 'turnos') cargarTurnos();
@@ -382,52 +377,56 @@
 
         // ============ CALENDARIO ============
         async function iniciarCalendario() {
-            if (calendario) {
-                calendario.refetchEvents();
-                return;
+            try {
+                const res = await fetch(`${API_BASE}/api/turnos/?limit=500`, {
+                    headers: authHeaders()
+                });
+                const turnos = await res.json();
+
+                const hoy = new Date().toISOString().split('T')[0];
+                document.getElementById('stat-hoy').textContent =
+                    turnos.filter(t => t.fecha === hoy).length;
+                document.getElementById('stat-pendientes').textContent =
+                    turnos.filter(t => t.estado === 'pendiente').length;
+                document.getElementById('stat-completados').textContent =
+                    turnos.filter(t => t.estado === 'completado').length;
+                document.getElementById('stat-total').textContent = turnos.length;
+
+                const eventos = turnos.map(t => ({
+                    id: t.id,
+                    title: `${t.hora ? t.hora.slice(0,5) : ''} - ${t.cliente?.nombre || 'Cliente'} ${t.cliente?.apellido || ''}`,
+                    start: `${t.fecha}T${t.hora}`,
+                    className: `fc-event-${t.estado}`,
+                    extendedProps: { turno: t }
+                }));
+
+                if (calendario) {
+                    calendario.destroy();
+                    calendario = null;
+                }
+
+                const calEl = document.getElementById('calendario');
+                calendario = new FullCalendar.Calendar(calEl, {
+                    initialView: 'dayGridMonth',
+                    locale: 'es',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    events: eventos,
+                    eventClick: function(info) {
+                        mostrarModalTurno(info.event.extendedProps.turno);
+                    },
+                    height: 'auto',
+                    aspectRatio: 1.8
+                });
+
+                calendario.render();
+
+            } catch (err) {
+                console.error('Error cargando calendario:', err);
             }
-
-            const res = await fetch(`${API_BASE}/api/turnos/?limit=500`, {
-                headers: authHeaders()
-            });
-            const turnos = await res.json();
-
-            // Actualizar stats
-            const hoy = new Date().toISOString().split('T')[0];
-            document.getElementById('stat-hoy').textContent =
-                turnos.filter(t => t.fecha === hoy).length;
-            document.getElementById('stat-pendientes').textContent =
-                turnos.filter(t => t.estado === 'pendiente').length;
-            document.getElementById('stat-completados').textContent =
-                turnos.filter(t => t.estado === 'completado').length;
-            document.getElementById('stat-total').textContent = turnos.length;
-
-            const eventos = turnos.map(t => ({
-                id: t.id,
-                title: `${t.hora.slice(0,5)} — ${t.cliente?.nombre || 'Cliente'} ${t.cliente?.apellido || ''}`,
-                start: `${t.fecha}T${t.hora}`,
-                className: `fc-event-${t.estado}`,
-                extendedProps: { turno: t }
-            }));
-
-            const calEl = document.getElementById('calendario');
-            calendario = new FullCalendar.Calendar(calEl, {
-                initialView: 'dayGridMonth',
-                locale: 'es',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                events: eventos,
-                eventClick: function(info) {
-                    mostrarModalTurno(info.event.extendedProps.turno);
-                },
-                height: 'auto',
-                aspectRatio: 1.8
-            });
-
-            calendario.render();
         }
 
         // ============ MODAL TURNO ============
@@ -443,15 +442,15 @@
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gris-claro">Cliente</span>
-                    <span class="text-blanco">${turno.cliente?.nombre} ${turno.cliente?.apellido}</span>
+                    <span class="text-blanco">${turno.cliente?.nombre || ''} ${turno.cliente?.apellido || ''}</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-gris-claro">Teléfono</span>
-                    <span class="text-blanco">${turno.cliente?.telefono || '—'}</span>
+                    <span class="text-gris-claro">Telefono</span>
+                    <span class="text-blanco">${turno.cliente?.telefono || '-'}</span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gris-claro">Servicio</span>
-                    <span class="text-blanco">${turno.servicio?.nombre}</span>
+                    <span class="text-blanco">${turno.servicio?.nombre || '-'}</span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gris-claro">Fecha</span>
@@ -459,7 +458,7 @@
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gris-claro">Hora</span>
-                    <span class="text-blanco">${turno.hora?.slice(0,5)} hs</span>
+                    <span class="text-blanco">${turno.hora ? turno.hora.slice(0,5) : '-'} hs</span>
                 </div>
                 ${turno.notas ? `
                 <div class="flex justify-between">
@@ -501,9 +500,8 @@
                 });
                 if (res.ok) {
                     cerrarModal();
-                    iniciarCalendario();
                     calendario = null;
-                    setTimeout(() => iniciarCalendario(), 100);
+                    iniciarCalendario();
                 }
             } catch (err) {
                 console.error(err);
@@ -512,63 +510,77 @@
 
         // ============ TURNOS ============
         async function cargarTurnos() {
-            const res = await fetch(`${API_BASE}/api/turnos/?limit=200`, {
-                headers: authHeaders()
-            });
-            const turnos = await res.json();
-            const tbody = document.getElementById('turnos-body');
+            try {
+                const res = await fetch(`${API_BASE}/api/turnos/?limit=200`, {
+                    headers: authHeaders()
+                });
+                const turnos = await res.json();
+                const tbody = document.getElementById('turnos-body');
 
-            if (turnos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-12 text-gris-claro">No hay turnos</td></tr>';
-                return;
+                if (turnos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-12 text-gris-claro">No hay turnos registrados</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = turnos.map(t => `
+                    <tr class="border-t border-gris-medio hover:bg-gris-oscuro transition-colors">
+                        <td class="px-6 py-4 text-blanco">
+                            ${t.cliente?.nombre || '-'} ${t.cliente?.apellido || ''}
+                        </td>
+                        <td class="px-6 py-4 text-gris-claro">${t.servicio?.nombre || '-'}</td>
+                        <td class="px-6 py-4 text-gris-claro">${t.fecha}</td>
+                        <td class="px-6 py-4 text-gris-claro">${t.hora ? t.hora.slice(0,5) : '-'} hs</td>
+                        <td class="px-6 py-4">
+                            <span class="badge badge-${t.estado}">${t.estado}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <button onclick='mostrarModalTurno(${JSON.stringify(t).replace(/'/g, "&#39;")})'
+                                class="text-xs text-dorado hover:text-dorado-claro tracking-wider">
+                                Ver
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error cargando turnos:', err);
             }
-
-            tbody.innerHTML = turnos.map(t => `
-                <tr class="border-t border-gris-medio hover:bg-gris-oscuro transition-colors">
-                    <td class="px-6 py-4 text-blanco">
-                        ${t.cliente?.nombre || '—'} ${t.cliente?.apellido || ''}
-                    </td>
-                    <td class="px-6 py-4 text-gris-claro">${t.servicio?.nombre || '—'}</td>
-                    <td class="px-6 py-4 text-gris-claro">${t.fecha}</td>
-                    <td class="px-6 py-4 text-gris-claro">${t.hora?.slice(0,5)} hs</td>
-                    <td class="px-6 py-4">
-                        <span class="badge badge-${t.estado}">${t.estado}</span>
-                    </td>
-                    <td class="px-6 py-4">
-                        <button onclick='mostrarModalTurno(${JSON.stringify(t)})'
-                            class="text-xs text-dorado hover:text-dorado-claro tracking-wider">
-                            Ver →
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
         }
 
         // ============ SERVICIOS ============
         async function cargarServicios() {
-            const res = await fetch(`${API_BASE}/api/servicios/`);
-            const servicios = await res.json();
-            const tbody = document.getElementById('servicios-body');
+            try {
+                const res = await fetch(`${API_BASE}/api/servicios/`);
+                const servicios = await res.json();
+                const tbody = document.getElementById('servicios-body');
 
-            tbody.innerHTML = servicios.map(s => `
-                <tr class="border-t border-gris-medio hover:bg-gris-oscuro transition-colors">
-                    <td class="px-6 py-4 text-blanco font-medium">${s.nombre}</td>
-                    <td class="px-6 py-4 text-gris-claro">${s.descripcion || '—'}</td>
-                    <td class="px-6 py-4 text-gris-claro">${s.duracion} min</td>
-                    <td class="px-6 py-4 text-dorado">$${Number(s.precio).toLocaleString('es-AR')}</td>
-                    <td class="px-6 py-4">
-                        <button onclick="eliminarServicio(${s.id})"
-                            class="text-xs text-red-400 hover:text-red-300 tracking-wider">
-                            Eliminar
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+                if (servicios.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-12 text-gris-claro">No hay servicios</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = servicios.map(s => `
+                    <tr class="border-t border-gris-medio hover:bg-gris-oscuro transition-colors">
+                        <td class="px-6 py-4 text-blanco font-medium">${s.nombre}</td>
+                        <td class="px-6 py-4 text-gris-claro">${s.descripcion || '-'}</td>
+                        <td class="px-6 py-4 text-gris-claro">${s.duracion} min</td>
+                        <td class="px-6 py-4 text-dorado">$${Number(s.precio).toLocaleString('es-AR')}</td>
+                        <td class="px-6 py-4">
+                            <button onclick="eliminarServicio(${s.id})"
+                                class="text-xs text-red-400 hover:text-red-300 tracking-wider">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error cargando servicios:', err);
+            }
         }
 
         function mostrarFormServicio() {
             document.getElementById('form-servicio').classList.remove('hidden');
         }
+
         function ocultarFormServicio() {
             document.getElementById('form-servicio').classList.add('hidden');
         }
@@ -580,103 +592,124 @@
                 duracion: parseInt(document.getElementById('serv-duracion').value),
                 descripcion: document.getElementById('serv-descripcion').value
             };
-            const res = await fetch(`${API_BASE}/api/servicios/`, {
-                method: 'POST',
-                headers: authHeaders(),
-                body: JSON.stringify(data)
-            });
-            if (res.ok) {
-                ocultarFormServicio();
-                cargarServicios();
+            try {
+                const res = await fetch(`${API_BASE}/api/servicios/`, {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    ocultarFormServicio();
+                    cargarServicios();
+                }
+            } catch (err) {
+                console.error('Error creando servicio:', err);
             }
         }
 
         async function eliminarServicio(id) {
-            if (!confirm('¿Eliminar este servicio?')) return;
-            await fetch(`${API_BASE}/api/servicios/${id}`, {
-                method: 'DELETE',
-                headers: authHeaders()
-            });
-            cargarServicios();
+            if (!confirm('Eliminar este servicio?')) return;
+            try {
+                await fetch(`${API_BASE}/api/servicios/${id}`, {
+                    method: 'DELETE',
+                    headers: authHeaders()
+                });
+                cargarServicios();
+            } catch (err) {
+                console.error('Error eliminando servicio:', err);
+            }
         }
 
         // ============ CLIENTES ============
         async function cargarClientes() {
-            const res = await fetch(`${API_BASE}/api/clientes/`, {
-                headers: authHeaders()
-            });
-            const clientes = await res.json();
-            const tbody = document.getElementById('clientes-body');
+            try {
+                const res = await fetch(`${API_BASE}/api/clientes/`, {
+                    headers: authHeaders()
+                });
+                const clientes = await res.json();
+                const tbody = document.getElementById('clientes-body');
 
-            tbody.innerHTML = clientes.map(c => `
-                <tr class="border-t border-gris-medio hover:bg-gris-oscuro transition-colors">
-                    <td class="px-6 py-4 text-blanco">${c.nombre} ${c.apellido}</td>
-                    <td class="px-6 py-4 text-gris-claro">${c.email}</td>
-                    <td class="px-6 py-4 text-gris-claro">${c.telefono}</td>
-                    <td class="px-6 py-4 text-gris-claro">
-                        ${new Date(c.fecha_creacion).toLocaleDateString('es-AR')}
-                    </td>
-                </tr>
-            `).join('');
+                if (clientes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center py-12 text-gris-claro">No hay clientes registrados</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = clientes.map(c => `
+                    <tr class="border-t border-gris-medio hover:bg-gris-oscuro transition-colors">
+                        <td class="px-6 py-4 text-blanco">${c.nombre} ${c.apellido}</td>
+                        <td class="px-6 py-4 text-gris-claro">${c.email}</td>
+                        <td class="px-6 py-4 text-gris-claro">${c.telefono}</td>
+                        <td class="px-6 py-4 text-gris-claro">
+                            ${new Date(c.fecha_creacion).toLocaleDateString('es-AR')}
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error cargando clientes:', err);
+            }
         }
 
-        // ============ ESTADÍSTICAS ============
+        // ============ ESTADISTICAS ============
         async function cargarEstadisticas() {
-            const [turnosRes, clientesRes, serviciosRes] = await Promise.all([
-                fetch(`${API_BASE}/api/turnos/?limit=500`, { headers: authHeaders() }),
-                fetch(`${API_BASE}/api/clientes/`, { headers: authHeaders() }),
-                fetch(`${API_BASE}/api/servicios/`)
-            ]);
+            try {
+                const [turnosRes, clientesRes, serviciosRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/turnos/?limit=500`, { headers: authHeaders() }),
+                    fetch(`${API_BASE}/api/clientes/`, { headers: authHeaders() }),
+                    fetch(`${API_BASE}/api/servicios/`)
+                ]);
 
-            const turnos = await turnosRes.json();
-            const clientes = await clientesRes.json();
-            const servicios = await serviciosRes.json();
+                const turnos = await turnosRes.json();
+                const clientes = await clientesRes.json();
+                const servicios = await serviciosRes.json();
 
-            const porEstado = turnos.reduce((acc, t) => {
-                acc[t.estado] = (acc[t.estado] || 0) + 1;
-                return acc;
-            }, {});
+                const porEstado = turnos.reduce((acc, t) => {
+                    acc[t.estado] = (acc[t.estado] || 0) + 1;
+                    return acc;
+                }, {});
 
-            const ingresos = turnos
-                .filter(t => t.estado === 'completado')
-                .reduce((sum, t) => sum + Number(t.servicio?.precio || 0), 0);
+                const ingresos = turnos
+                    .filter(t => t.estado === 'completado')
+                    .reduce((sum, t) => sum + Number(t.servicio?.precio || 0), 0);
 
-            document.getElementById('contenido-estadisticas').innerHTML = `
-                <div class="border border-gris-medio p-8">
-                    <p class="section-subtitle">Turnos por estado</p>
-                    <div class="space-y-4">
-                        ${Object.entries(porEstado).map(([estado, cant]) => `
-                            <div class="flex justify-between items-center">
-                                <span class="badge badge-${estado}">${estado}</span>
-                                <span class="font-serif text-2xl text-blanco">${cant}</span>
+                document.getElementById('contenido-estadisticas').innerHTML = `
+                    <div class="border border-gris-medio p-8">
+                        <p class="section-subtitle">Turnos por estado</p>
+                        <div class="space-y-4">
+                            ${Object.entries(porEstado).map(([estado, cant]) => `
+                                <div class="flex justify-between items-center">
+                                    <span class="badge badge-${estado}">${estado}</span>
+                                    <span class="font-serif text-2xl text-blanco">${cant}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="border border-gris-medio p-8">
+                        <p class="section-subtitle">Resumen general</p>
+                        <div class="space-y-4">
+                            <div class="flex justify-between">
+                                <span class="text-gris-claro text-sm">Total clientes</span>
+                                <span class="font-serif text-2xl text-dorado">${clientes.length}</span>
                             </div>
-                        `).join('')}
-                    </div>
-                </div>
-                <div class="border border-gris-medio p-8">
-                    <p class="section-subtitle">Resumen general</p>
-                    <div class="space-y-4">
-                        <div class="flex justify-between">
-                            <span class="text-gris-claro text-sm">Total clientes</span>
-                            <span class="font-serif text-2xl text-dorado">${clientes.length}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gris-claro text-sm">Servicios activos</span>
-                            <span class="font-serif text-2xl text-dorado">${servicios.length}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gris-claro text-sm">Total turnos</span>
-                            <span class="font-serif text-2xl text-dorado">${turnos.length}</span>
-                        </div>
-                        <div class="flex justify-between border-t border-gris-medio pt-4">
-                            <span class="text-gris-claro text-sm">Ingresos completados</span>
-                            <span class="font-serif text-2xl text-dorado">
-                                $${ingresos.toLocaleString('es-AR')}
-                            </span>
+                            <div class="flex justify-between">
+                                <span class="text-gris-claro text-sm">Servicios activos</span>
+                                <span class="font-serif text-2xl text-dorado">${servicios.length}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gris-claro text-sm">Total turnos</span>
+                                <span class="font-serif text-2xl text-dorado">${turnos.length}</span>
+                            </div>
+                            <div class="flex justify-between border-t border-gris-medio pt-4">
+                                <span class="text-gris-claro text-sm">Ingresos completados</span>
+                                <span class="font-serif text-2xl text-dorado">
+                                    $${ingresos.toLocaleString('es-AR')}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
+            } catch (err) {
+                console.error('Error cargando estadisticas:', err);
+            }
         }
 
         // ============ LOGOUT ============
@@ -686,7 +719,7 @@
             window.location.href = '/admin/login';
         }
 
-        // Iniciar calendario al cargar
+        // Iniciar al cargar
         document.addEventListener('DOMContentLoaded', () => {
             iniciarCalendario();
         });
