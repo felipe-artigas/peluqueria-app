@@ -13,3 +13,17 @@ def index(request: Request):
         request=request,
         name="index.html"
     )
+
+@router.get("/admin/login", response_class=HTMLResponse)
+def admin_login(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="admin/login.html"
+    )
+
+@router.get("/admin/dashboard", response_class=HTMLResponse)
+def admin_dashboard(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="admin/dashboard.html"
+    )

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Administrador — Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-negro min-h-screen flex items-center justify-center">
+
+    <div class="w-full max-w-md px-6">
+
+        <!-- Logo -->
+        <div class="text-center mb-12">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="w-8 h-px bg-dorado"></div>
+                <span class="font-serif text-2xl text-blanco">STUDIO</span>
+                <div class="w-8 h-px bg-dorado"></div>
+            </div>
+            <p class="text-xs tracking-widest uppercase text-gris-claro">Panel de Administración</p>
+        </div>
+
+        <!-- Formulario -->
+        <div class="border border-gris-medio p-10">
+            <p class="section-subtitle text-center mb-8">Iniciar Sesión</p>
+
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
+                        Usuario
+                    </label>
+                    <input type="text" id="usuario"
+                        class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
+                               focus:outline-none focus:border-dorado transition-colors text-sm"
+                        placeholder="Tu usuario">
+                </div>
+                <div>
+                    <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
+                        Contraseña
+                    </label>
+                    <input type="password" id="contrasena"
+                        class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
+                               focus:outline-none focus:border-dorado transition-colors text-sm"
+                        placeholder="Tu contraseña">
+                </div>
+
+                <div id="error-login" class="hidden text-red-400 text-xs text-center py-3 border border-red-500 bg-red-500/5"></div>
+
+                <button onclick="login()"
+                    class="btn-solid w-full text-center py-4 mt-4">
+                    Ingresar
+                </button>
+            </div>
+        </div>
+
+        <div class="text-center mt-8">
+            <a href="/" class="nav-link">← Volver al sitio</a>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000';
+
+        // Si ya está logueado, redirigir al dashboard
+        if (localStorage.getItem('admin_token')) {
+            window.location.href = '/admin/dashboard';
+        }
+
+        async function login() {
+            const usuario = document.getElementById('usuario').value.trim();
+            const contrasena = document.getElementById('contrasena').value.trim();
+            const errorDiv = document.getElementById('error-login');
+
+            if (!usuario || !contrasena) {
+                mostrarError('Completá todos los campos');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario, contrasena })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem('admin_token', data.access_token);
+                    localStorage.setItem('admin_nombre', data.administrador.nombre);
+                    window.location.href = '/admin/dashboard';
+                } else {
+                    mostrarError('Usuario o contraseña incorrectos');
+                }
+            } catch (err) {
+                mostrarError('Error de conexión');
+            }
+        }
+
+        function mostrarError(msg) {
+            const div = document.getElementById('error-login');
+            div.textContent = msg;
+            div.classList.remove('hidden');
+        }
+
+        // Login con Enter
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') login();
+        });
+    </script>
+</body>
+</html>
