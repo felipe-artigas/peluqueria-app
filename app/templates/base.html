@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Peluquería{% endblock %} — Studio</title>
+    <meta name="description" content="{% block description %}Sistema profesional de reservas{% endblock %}">
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+    <!-- CSS compilado -->
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-negro text-blanco">
+
+    <!-- Navegación -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="flex items-center justify-between h-20">
+
+                <!-- Logo -->
+                <a href="/" class="flex items-center gap-3">
+                    <div class="w-8 h-px bg-dorado"></div>
+                    <span class="font-serif text-xl text-blanco tracking-wider">STUDIO</span>
+                    <div class="w-8 h-px bg-dorado"></div>
+                </a>
+
+                <!-- Links escritorio -->
+                <div class="hidden md:flex items-center gap-10">
+                    <a href="/#servicios" class="nav-link">Servicios</a>
+                    <a href="/#nosotros" class="nav-link">Nosotros</a>
+                    <a href="/#ubicacion" class="nav-link">Ubicación</a>
+                    <a href="/#contacto" class="nav-link">Contacto</a>
+                </div>
+
+                <!-- Botón reservar -->
+                <div class="hidden md:block">
+                    <a href="/#reservar" class="btn-ghost text-xs">
+                        Reservar Turno
+                    </a>
+                </div>
+
+                <!-- Menú móvil -->
+                <button id="menu-toggle" class="md:hidden text-blanco p-2">
+                    <div class="w-6 h-px bg-blanco mb-1.5 transition-all" id="line1"></div>
+                    <div class="w-6 h-px bg-blanco mb-1.5 transition-all" id="line2"></div>
+                    <div class="w-4 h-px bg-blanco transition-all" id="line3"></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menú móvil expandido -->
+        <div id="mobile-menu" class="hidden md:hidden bg-negro-suave border-t border-gris-medio">
+            <div class="px-6 py-8 flex flex-col gap-6">
+                <a href="/#servicios" class="nav-link text-base">Servicios</a>
+                <a href="/#nosotros" class="nav-link text-base">Nosotros</a>
+                <a href="/#ubicacion" class="nav-link text-base">Ubicación</a>
+                <a href="/#contacto" class="nav-link text-base">Contacto</a>
+                <a href="/#reservar" class="btn-ghost text-center mt-4">Reservar Turno</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-negro-suave border-t border-gris-medio">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+
+                <!-- Marca -->
+                <div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-6 h-px bg-dorado"></div>
+                        <span class="font-serif text-lg text-blanco">STUDIO</span>
+                        <div class="w-6 h-px bg-dorado"></div>
+                    </div>
+                    <p class="text-gris-claro text-sm leading-relaxed">
+                        Estética y cuidado capilar de nivel profesional.
+                        Tu imagen, nuestra pasión.
+                    </p>
+                </div>
+
+                <!-- Horarios -->
+                <div>
+                    <p class="section-subtitle text-left">Horarios</p>
+                    <div class="space-y-2 text-sm text-gris-claro">
+                        <div class="flex justify-between">
+                            <span>Lunes a Viernes</span>
+                            <span class="text-blanco">9:00 — 20:00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Sábados</span>
+                            <span class="text-blanco">9:00 — 18:00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Domingos</span>
+                            <span class="text-dorado">Cerrado</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contacto -->
+                <div>
+                    <p class="section-subtitle text-left">Contacto</p>
+                    <div class="space-y-2 text-sm text-gris-claro">
+                        <p>📍 Tu dirección, Ciudad</p>
+                        <p>📞 +54 9 11 0000-0000</p>
+                        <p>✉️ info@studio.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gris-medio mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gris-claro text-xs tracking-wider">
+                    © 2024 STUDIO. Todos los derechos reservados.
+                </p>
+                <a href="/admin/login" class="text-gris-claro text-xs hover:text-dorado transition-colors">
+                    Acceso Administrador
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript base -->
+    <script src="/static/js/main.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

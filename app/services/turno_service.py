@@ -24,7 +24,7 @@ def obtener_turno_por_id(db: Session, turno_id: int) -> Turno:
         .options(joinedload(Turno.cliente), joinedload(Turno.servicio))
         .where(Turno.id == turno_id)
     )
-    turno = db.execute(stmt).scalar_one_or_none()
+    horario = db.execute(stmt).scalars().first()
     if not turno:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

@@ -5,6 +5,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.routers import clientes, servicios, turnos, auth, horarios
+from app.routers import clientes, servicios, turnos, auth, horarios, pages
+
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -32,6 +34,7 @@ app.include_router(clientes.router)
 app.include_router(servicios.router)
 app.include_router(turnos.router)
 app.include_router(horarios.router)
+app.include_router(pages.router)
 
 @app.get("/api/health")
 def health_check():

@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+
+<!-- ============ HERO ============ -->
+<section class="relative h-screen flex items-center justify-center overflow-hidden">
+
+    <!-- Fondo con gradiente -->
+    <div class="absolute inset-0 bg-gradient-to-b from-negro via-gris-oscuro to-negro"></div>
+
+    <!-- Líneas decorativas -->
+    <div class="absolute top-0 left-0 w-px h-full bg-gradient-to-b from-transparent via-dorado to-transparent opacity-20"></div>
+    <div class="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-transparent via-dorado to-transparent opacity-20"></div>
+
+    <!-- Contenido hero -->
+    <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+        <p class="section-subtitle animate-fade-in">Bienvenido a</p>
+        <h1 class="font-serif text-6xl md:text-8xl lg:text-9xl text-blanco mb-6 leading-none">
+            STUDIO
+        </h1>
+        <div class="w-24 h-px bg-dorado mx-auto mb-8"></div>
+        <p class="text-gris-claro text-sm md:text-base tracking-wider leading-relaxed max-w-xl mx-auto mb-12">
+            Estética y cuidado capilar de nivel profesional.<br>
+            Reservá tu turno online en minutos.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#reservar" class="btn-solid">Reservar Ahora</a>
+            <a href="#servicios" class="btn-ghost">Ver Servicios</a>
+        </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+        <span class="text-gris-claro text-xs tracking-widest">SCROLL</span>
+        <div class="w-px h-8 bg-gradient-to-b from-dorado to-transparent"></div>
+    </div>
+</section>
+
+<!-- ============ SERVICIOS ============ -->
+<section id="servicios" class="py-32 bg-negro">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+
+        <!-- Encabezado -->
+        <div class="text-center mb-20">
+            <p class="section-subtitle">Lo que ofrecemos</p>
+            <h2 class="section-title">Nuestros Servicios</h2>
+            <div class="w-16 h-px bg-dorado mx-auto mt-6"></div>
+        </div>
+
+        <!-- Grid de servicios (cargado dinámicamente) -->
+        <div id="servicios-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Skeleton loader -->
+            <div class="card-servicio animate-pulse">
+                <div class="h-4 bg-gris-medio rounded mb-4 w-3/4"></div>
+                <div class="h-3 bg-gris-medio rounded mb-2 w-full"></div>
+                <div class="h-3 bg-gris-medio rounded mb-6 w-2/3"></div>
+                <div class="h-8 bg-gris-medio rounded w-1/3"></div>
+            </div>
+            <div class="card-servicio animate-pulse">
+                <div class="h-4 bg-gris-medio rounded mb-4 w-3/4"></div>
+                <div class="h-3 bg-gris-medio rounded mb-2 w-full"></div>
+                <div class="h-3 bg-gris-medio rounded mb-6 w-2/3"></div>
+                <div class="h-8 bg-gris-medio rounded w-1/3"></div>
+            </div>
+            <div class="card-servicio animate-pulse">
+                <div class="h-4 bg-gris-medio rounded mb-4 w-3/4"></div>
+                <div class="h-3 bg-gris-medio rounded mb-2 w-full"></div>
+                <div class="h-3 bg-gris-medio rounded mb-6 w-2/3"></div>
+                <div class="h-8 bg-gris-medio rounded w-1/3"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ NOSOTROS ============ -->
+<section id="nosotros" class="py-32 bg-gris-oscuro">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+
+            <!-- Texto -->
+            <div>
+                <p class="section-subtitle">Quiénes somos</p>
+                <h2 class="section-title">Arte y precisión<br><em>en cada corte</em></h2>
+                <div class="w-16 h-px bg-dorado mt-6 mb-8"></div>
+                <p class="text-gris-claro leading-relaxed mb-6">
+                    Somos un equipo de profesionales apasionados por el arte capilar.
+                    Cada cliente es único y merece una atención personalizada que realce
+                    su mejor versión.
+                </p>
+                <p class="text-gris-claro leading-relaxed mb-10">
+                    Trabajamos con los mejores productos del mercado y técnicas
+                    modernas para garantizar resultados que superen tus expectativas.
+                </p>
+                <a href="#reservar" class="btn-ghost">Reservar Turno</a>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="grid grid-cols-2 gap-6">
+                <div class="border border-gris-medio p-8 text-center hover:border-dorado transition-colors duration-500">
+                    <p class="font-serif text-5xl text-dorado mb-2">10+</p>
+                    <p class="text-xs tracking-widest text-gris-claro uppercase">Años de experiencia</p>
+                </div>
+                <div class="border border-gris-medio p-8 text-center hover:border-dorado transition-colors duration-500">
+                    <p class="font-serif text-5xl text-dorado mb-2">500+</p>
+                    <p class="text-xs tracking-widest text-gris-claro uppercase">Clientes satisfechos</p>
+                </div>
+                <div class="border border-gris-medio p-8 text-center hover:border-dorado transition-colors duration-500">
+                    <p class="font-serif text-5xl text-dorado mb-2">15+</p>
+                    <p class="text-xs tracking-widest text-gris-claro uppercase">Servicios disponibles</p>
+                </div>
+                <div class="border border-gris-medio p-8 text-center hover:border-dorado transition-colors duration-500">
+                    <p class="font-serif text-5xl text-dorado mb-2">98%</p>
+                    <p class="text-xs tracking-widest text-gris-claro uppercase">Clientes que vuelven</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ RESERVAR ============ -->
+<section id="reservar" class="py-32 bg-negro">
+    <div class="max-w-3xl mx-auto px-6 lg:px-12">
+
+        <div class="text-center mb-16">
+            <p class="section-subtitle">Online y sin esperas</p>
+            <h2 class="section-title">Reservá tu Turno</h2>
+            <div class="w-16 h-px bg-dorado mx-auto mt-6"></div>
+        </div>
+
+        <!-- Formulario de reserva -->
+        <form id="form-reserva" class="space-y-6">
+
+            <!-- Paso 1: Datos personales -->
+            <div class="border border-gris-medio p-8">
+                <p class="section-subtitle text-left mb-6">01 — Tus datos</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Nombre</label>
+                        <input type="text" id="nombre" required
+                            class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
+                                   focus:outline-none focus:border-dorado transition-colors text-sm"
+                            placeholder="Tu nombre">
+                    </div>
+                    <div>
+                        <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Apellido</label>
+                        <input type="text" id="apellido" required
+                            class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
+                                   focus:outline-none focus:border-dorado transition-colors text-sm"
+                            placeholder="Tu apellido">
+                    </div>
+                    <div>
+                        <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Email</label>
+                        <input type="email" id="email" required
+                            class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
+                                   focus:outline-none focus:border-dorado transition-colors text-sm"
+                            placeholder="tu@email.com">
+                    </div>
+                    <div>
+                        <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Teléfono</label>
+                        <input type="tel" id="telefono" required
+                            class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
+                                   focus:outline-none focus:border-dorado transition-colors text-sm"
+                            placeholder="+54 9 11 0000-0000">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 2: Servicio -->
+            <div class="border border-gris-medio p-8">
+                <p class="section-subtitle text-left mb-6">02 — Elegí tu servicio</p>
+                <div id="servicios-selector" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p class="text-gris-claro text-sm">Cargando servicios...</p>
+                </div>
+            </div>
+
+            <!-- Paso 3: Fecha y hora -->
+            <div class="border border-gris-medio p-8">
+                <p class="section-subtitle text-left mb-6">03 — Elegí fecha y hora</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Fecha</label>
+                        <input type="date" id="fecha" required
+                            class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
+                                   focus:outline-none focus:border-dorado transition-colors text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Horario disponible</label>
+                        <select id="hora" required
+                            class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
+                                   focus:outline-none focus:border-dorado transition-colors text-sm">
+                            <option value="">Primero elegí una fecha</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notas opcionales -->
+            <div class="border border-gris-medio p-8">
+                <p class="section-subtitle text-left mb-6">04 — Notas (opcional)</p>
+                <textarea id="notas" rows="3"
+                    class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
+                           focus:outline-none focus:border-dorado transition-colors text-sm resize-none"
+                    placeholder="¿Algo que debamos saber?"></textarea>
+            </div>
+
+            <!-- Botón enviar -->
+            <button type="submit" class="btn-solid w-full text-center py-4">
+                Confirmar Reserva
+            </button>
+
+            <!-- Mensaje de respuesta -->
+            <div id="mensaje-reserva" class="hidden text-center py-6"></div>
+        </form>
+    </div>
+</section>
+
+<!-- ============ UBICACION ============ -->
+<section id="ubicacion" class="py-32 bg-gris-oscuro">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="text-center mb-16">
+            <p class="section-subtitle">Dónde encontrarnos</p>
+            <h2 class="section-title">Ubicación</h2>
+            <div class="w-16 h-px bg-dorado mx-auto mt-6"></div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <div class="flex gap-6">
+                    <div class="w-px bg-dorado flex-shrink-0"></div>
+                    <div>
+                        <p class="text-xs tracking-widest uppercase text-dorado mb-2">Dirección</p>
+                        <p class="text-blanco">Tu dirección, Ciudad, Provincia</p>
+                    </div>
+                </div>
+                <div class="flex gap-6">
+                    <div class="w-px bg-dorado flex-shrink-0"></div>
+                    <div>
+                        <p class="text-xs tracking-widest uppercase text-dorado mb-2">Teléfono</p>
+                        <p class="text-blanco">+54 9 11 0000-0000</p>
+                    </div>
+                </div>
+                <div class="flex gap-6">
+                    <div class="w-px bg-dorado flex-shrink-0"></div>
+                    <div>
+                        <p class="text-xs tracking-widest uppercase text-dorado mb-2">Email</p>
+                        <p class="text-blanco">info@studio.com</p>
+                    </div>
+                </div>
+                <div class="flex gap-6">
+                    <div class="w-px bg-dorado flex-shrink-0"></div>
+                    <div>
+                        <p class="text-xs tracking-widest uppercase text-dorado mb-2">Horarios</p>
+                        <p class="text-blanco">Lun–Vie: 9:00 a 20:00</p>
+                        <p class="text-blanco">Sábados: 9:00 a 18:00</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Placeholder del mapa -->
+            <div class="border border-gris-medio h-80 flex items-center justify-center">
+                <p class="text-gris-claro text-sm tracking-wider">MAPA — GOOGLE MAPS</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
