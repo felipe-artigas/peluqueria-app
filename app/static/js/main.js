@@ -12,7 +12,7 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// ============ MENÚ MÓVIL ============
+// ============ MENU MOVIL ============
 const menuToggle = document.getElementById('menu-toggle');
 const mobileMenu = document.getElementById('mobile-menu');
 if (menuToggle) {
@@ -21,7 +21,7 @@ if (menuToggle) {
     });
 }
 
-// ============ CERRAR MENÚ AL HACER CLIC EN LINK ============
+// ============ CERRAR MENU AL HACER CLIC EN LINK ============
 document.querySelectorAll('#mobile-menu a').forEach(link => {
     link.addEventListener('click', () => {
         mobileMenu.classList.add('hidden');
@@ -34,16 +34,16 @@ async function cargarServicios() {
         const res = await fetch(`${API_BASE}/api/servicios/`);
         const servicios = await res.json();
 
-        // Grid de servicios en la sección de presentación
+        // Grid de servicios en la seccion de presentacion
         const grid = document.getElementById('servicios-grid');
         if (grid) {
             if (servicios.length === 0) {
                 grid.innerHTML = `<p class="text-gris-claro col-span-3 text-center">
-                    No hay servicios disponibles aún.</p>`;
+                    No hay servicios disponibles aun.</p>`;
             } else {
                 grid.innerHTML = servicios.map(s => `
                     <div class="card-servicio" onclick="seleccionarServicioDesdeCard(${s.id})">
-                        <div class="w-8 h-px bg-dorado mb-6 group-hover:w-16 transition-all duration-500"></div>
+                        <div class="w-8 h-px bg-dorado mb-6 transition-all duration-500"></div>
                         <h3 class="font-serif text-xl text-blanco mb-3">${s.nombre}</h3>
                         <p class="text-gris-claro text-sm leading-relaxed mb-6">
                             ${s.descripcion || 'Servicio profesional de calidad.'}
@@ -70,7 +70,7 @@ async function cargarServicios() {
                          data-id="${s.id}"
                          onclick="seleccionarServicio(this, ${s.id})">
                         <p class="text-blanco text-sm font-medium mb-1">${s.nombre}</p>
-                        <p class="text-dorado text-xs">$${Number(s.precio).toLocaleString('es-AR')} — ${s.duracion} min</p>
+                        <p class="text-dorado text-xs">$${Number(s.precio).toLocaleString('es-AR')} - ${s.duracion} min</p>
                     </div>
                 `).join('');
             }
@@ -119,7 +119,7 @@ async function cargarHorariosDisponibles() {
         if (horarios.length === 0) {
             horaSelect.innerHTML = '<option value="">Sin horarios disponibles</option>';
         } else {
-            horaSelect.innerHTML = '<option value="">Seleccioná un horario</option>' +
+            horaSelect.innerHTML = '<option value="">Selecciona un horario</option>' +
                 horarios.map(h => `<option value="${h}">${h}</option>`).join('');
         }
     } catch (err) {
@@ -130,12 +130,43 @@ async function cargarHorariosDisponibles() {
 // Escuchar cambios en la fecha
 document.getElementById('fecha')?.addEventListener('change', cargarHorariosDisponibles);
 
-// Establecer fecha mínima como hoy
+// Establecer fecha minima como hoy
 const inputFecha = document.getElementById('fecha');
 if (inputFecha) {
     const hoy = new Date().toISOString().split('T')[0];
     inputFecha.min = hoy;
 }
+
+// ============ BUSCAR CLIENTE EXISTENTE POR EMAIL ============
+let clienteExistenteId = null;
+
+document.getElementById('email')?.addEventListener('blur', async () => {
+    const email = document.getElementById('email').value.trim();
+    if (!email) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/api/clientes/buscar/email/${encodeURIComponent(email)}`);
+        if (res.ok) {
+            const cliente = await res.json();
+            clienteExistenteId = cliente.id;
+
+            // Autocompletar campos si el cliente ya existe
+            document.getElementById('nombre').value = cliente.nombre;
+            document.getElementById('apellido').value = cliente.apellido;
+            document.getElementById('telefono').value = cliente.telefono;
+
+            // Mostrar mensaje informativo
+            const mensajeDiv = document.getElementById('mensaje-reserva');
+            mensajeDiv.classList.remove('hidden');
+            mensajeDiv.className = 'text-center py-3 px-4 border border-dorado/30 text-dorado/70 text-xs tracking-wider';
+            mensajeDiv.textContent = 'Cliente encontrado. Tus datos fueron completados automaticamente.';
+        } else {
+            clienteExistenteId = null;
+        }
+    } catch (err) {
+        clienteExistenteId = null;
+    }
+});
 
 // ============ ENVIAR RESERVA ============
 document.getElementById('form-reserva')?.addEventListener('submit', async (e) => {
@@ -153,11 +184,15 @@ document.getElementById('form-reserva')?.addEventListener('submit', async (e) =>
 
     // Validaciones
     if (!servicioSeleccionadoId) {
-        mostrarMensaje(mensajeDiv, 'Por favor seleccioná un servicio.', 'error');
+        mostrarMensaje(mensajeDiv, 'Por favor selecciona un servicio.', 'error');
+        return;
+    }
+    if (!fecha) {
+        mostrarMensaje(mensajeDiv, 'Por favor selecciona una fecha.', 'error');
         return;
     }
     if (!hora) {
-        mostrarMensaje(mensajeDiv, 'Por favor seleccioná un horario.', 'error');
+        mostrarMensaje(mensajeDiv, 'Por favor selecciona un horario disponible.', 'error');
         return;
     }
 
@@ -165,28 +200,29 @@ document.getElementById('form-reserva')?.addEventListener('submit', async (e) =>
     btnSubmit.disabled = true;
 
     try {
-        // Paso 1: Crear o buscar cliente
-        const clienteRes = await fetch(`${API_BASE}/api/clientes/`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre, apellido, email, telefono })
-        });
+        let clienteId = clienteExistenteId;
 
-        let clienteId;
-        if (clienteRes.ok) {
-            const cliente = await clienteRes.json();
-            clienteId = cliente.id;
-        } else if (clienteRes.status === 400) {
-            // El cliente ya existe — buscarlo por email no es posible públicamente
-            // En este caso mostramos el error
-            const err = await clienteRes.json();
-            mostrarMensaje(mensajeDiv, err.detail, 'error');
-            btnSubmit.textContent = 'Confirmar Reserva';
-            btnSubmit.disabled = false;
-            return;
+        // Si no existe el cliente, crearlo
+        if (!clienteId) {
+            const clienteRes = await fetch(`${API_BASE}/api/clientes/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre, apellido, email, telefono })
+            });
+
+            if (clienteRes.ok) {
+                const cliente = await clienteRes.json();
+                clienteId = cliente.id;
+            } else {
+                const err = await clienteRes.json();
+                mostrarMensaje(mensajeDiv, err.detail || 'Error al registrar cliente.', 'error');
+                btnSubmit.textContent = 'Confirmar Reserva';
+                btnSubmit.disabled = false;
+                return;
+            }
         }
 
-        // Paso 2: Crear turno
+        // Crear el turno
         const turnoRes = await fetch(`${API_BASE}/api/turnos/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -200,22 +236,26 @@ document.getElementById('form-reserva')?.addEventListener('submit', async (e) =>
         });
 
         if (turnoRes.ok) {
-            mostrarMensaje(mensajeDiv,
-                `✓ ¡Turno confirmado! Te esperamos el ${fecha} a las ${hora} hs.`,
+            mostrarMensaje(
+                mensajeDiv,
+                `Turno confirmado para el ${fecha} a las ${hora} hs. Te esperamos!`,
                 'exito'
             );
             e.target.reset();
+            clienteExistenteId = null;
             servicioSeleccionadoId = null;
             document.querySelectorAll('.servicio-opcion').forEach(el => {
                 el.classList.remove('border-dorado', 'bg-gris-oscuro');
             });
+            document.getElementById('hora').innerHTML =
+                '<option value="">Primero elegi una fecha</option>';
         } else {
             const err = await turnoRes.json();
             mostrarMensaje(mensajeDiv, err.detail || 'Error al crear el turno.', 'error');
         }
 
     } catch (err) {
-        mostrarMensaje(mensajeDiv, 'Error de conexión. Intentá nuevamente.', 'error');
+        mostrarMensaje(mensajeDiv, 'Error de conexion. Intenta nuevamente.', 'error');
     }
 
     btnSubmit.textContent = 'Confirmar Reserva';

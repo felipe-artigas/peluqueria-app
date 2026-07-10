@@ -6,6 +6,7 @@ from app.database.database import get_db
 from app.schemas.cliente import ClienteCreate, ClienteUpdate, ClienteResponse
 from app.services import cliente_service
 from app.services.auth_service import obtener_admin_actual
+from fastapi import APIRouter, Depends, HTTPException, status
 
 router = APIRouter(prefix="/api/clientes", tags=["Clientes"])
 
@@ -34,6 +35,17 @@ def actualizar_cliente(
     _=Depends(obtener_admin_actual)
 ):
     return cliente_service.actualizar_cliente(db, cliente_id, cliente_data)
+
+@router.get("/buscar/email/{email}", response_model=ClienteResponse)
+def buscar_por_email(email: str, db: Session = Depends(get_db)):
+    """Busca un cliente por email — usado en el formulario de reserva."""
+    cliente = cliente_service.obtener_cliente_por_email(db, email)
+    if not cliente:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Cliente no encontrado"
+        )
+    return cliente
 
 @router.delete("/{cliente_id}")
 def eliminar_cliente(

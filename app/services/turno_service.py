@@ -24,13 +24,13 @@ def obtener_turno_por_id(db: Session, turno_id: int) -> Turno:
         .options(joinedload(Turno.cliente), joinedload(Turno.servicio))
         .where(Turno.id == turno_id)
     )
-    horario = db.execute(stmt).scalars().first()
-    if not turno:
+    resultado = db.execute(stmt).scalar_one_or_none()
+    if not resultado:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Turno con id {turno_id} no encontrado"
         )
-    return turno
+    return resultado
 
 def obtener_turnos_por_fecha(db: Session, fecha: date) -> list[Turno]:
     stmt = (
