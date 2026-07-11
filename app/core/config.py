@@ -1,7 +1,6 @@
 # app/core/config.py
 
 from pydantic_settings import BaseSettings
-from typing import ClassVar
 
 class Settings(BaseSettings):
     # Base de datos
@@ -14,13 +13,11 @@ class Settings(BaseSettings):
 
     # Aplicación
     APP_NAME: str = "Peluquería App"
-    DEBUG: bool = True
+    DEBUG: bool = False
 
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
+        extra = "ignore"
 
-# Instancia global de configuración
-# Se importa desde cualquier parte del proyecto con:
-# from app.core.config import settings
 settings = Settings()

@@ -1,6 +1,6 @@
 // app/static/js/main.js
 
-const API_BASE = 'http://127.0.0.1:8000';
+const API_BASE = window.location.origin;;
 
 // ============ NAVBAR ============
 const navbar = document.getElementById('navbar');
