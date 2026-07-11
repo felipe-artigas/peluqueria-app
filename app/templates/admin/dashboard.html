@@ -147,6 +147,10 @@
                    class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
                     Servicios
                 </a>
+<a href="#" onclick="mostrarSeccion('horarios', event)"
+   class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
+    Horarios
+</a>
                 <a href="#" onclick="mostrarSeccion('clientes', event)"
                    class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
                     Clientes
@@ -383,6 +387,80 @@
                 </div>
             </div>
 
+
+<!-- ======= SECCION HORARIOS ======= -->
+<div id="seccion-horarios" class="seccion hidden">
+    <div class="flex justify-between items-start mb-8">
+        <div>
+            <p class="section-subtitle">Gestion</p>
+            <h1 class="font-serif text-3xl text-blanco">Horarios Disponibles</h1>
+        </div>
+        <button onclick="mostrarFormHorario()" class="btn-ghost">+ Nuevo Horario</button>
+    </div>
+
+    <!-- Formulario nuevo horario -->
+    <div id="form-horario" class="hidden border border-dorado p-8 mb-8">
+        <p class="section-subtitle">Agregar Horario</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
+                    Dia de la semana
+                </label>
+                <select id="horario-dia"
+                    class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
+                           focus:outline-none focus:border-dorado transition-colors text-sm">
+                    <option value="0">Lunes</option>
+                    <option value="1">Martes</option>
+                    <option value="2">Miercoles</option>
+                    <option value="3">Jueves</option>
+                    <option value="4">Viernes</option>
+                    <option value="5">Sabado</option>
+                    <option value="6">Domingo</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
+                    Hora de inicio
+                </label>
+                <input type="time" id="horario-inicio"
+                    class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
+                           focus:outline-none focus:border-dorado transition-colors text-sm">
+            </div>
+            <div>
+                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
+                    Hora de fin
+                </label>
+                <input type="time" id="horario-fin"
+                    class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
+                           focus:outline-none focus:border-dorado transition-colors text-sm">
+            </div>
+        </div>
+        <div id="horario-mensaje" class="hidden mt-4 text-xs py-3 px-4 border"></div>
+        <div class="flex gap-4 mt-6">
+            <button onclick="crearHorario()" class="btn-solid">Guardar</button>
+            <button onclick="ocultarFormHorario()" class="btn-ghost">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Tabla de horarios -->
+    <div class="border border-gris-medio overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead class="bg-gris-oscuro">
+                <tr>
+                    <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Dia</th>
+                    <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Hora inicio</th>
+                    <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Hora fin</th>
+                    <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Estado</th>
+                    <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="horarios-body">
+                <tr><td colspan="5" class="text-center py-12 text-gris-claro">Cargando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
             <!-- ======= SECCION ESTADISTICAS ======= -->
             <div id="seccion-estadisticas" class="seccion hidden">
                 <div class="mb-8">
@@ -442,6 +520,7 @@
             if (nombre === 'servicios') cargarServicios();
             if (nombre === 'clientes') cargarClientes();
             if (nombre === 'estadisticas') cargarEstadisticas();
+            if (nombre === 'horarios') cargarHorarios();
         }
 
         // ============ CALENDARIO ============
@@ -955,6 +1034,122 @@ async function crearTurnoAdmin() {
         mensajeDiv.classList.remove('hidden');
         mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
         mensajeDiv.textContent = 'Error de conexion. Intenta nuevamente.';
+    }
+}
+// ============ HORARIOS ============
+const DIAS = {
+    0: 'Lunes', 1: 'Martes', 2: 'Miercoles',
+    3: 'Jueves', 4: 'Viernes', 5: 'Sabado', 6: 'Domingo'
+};
+
+function mostrarFormHorario() {
+    document.getElementById('form-horario').classList.remove('hidden');
+}
+
+function ocultarFormHorario() {
+    document.getElementById('form-horario').classList.add('hidden');
+    document.getElementById('horario-dia').value = '0';
+    document.getElementById('horario-inicio').value = '';
+    document.getElementById('horario-fin').value = '';
+    document.getElementById('horario-mensaje').classList.add('hidden');
+}
+
+async function cargarHorarios() {
+    try {
+        const res = await fetch(`${API_BASE}/api/horarios/`);
+        const horarios = await res.json();
+        const tbody = document.getElementById('horarios-body');
+
+        if (horarios.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-12 text-gris-claro">No hay horarios configurados</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = horarios.map(h => `
+            <tr class="border-t border-gris-medio hover:bg-gris-oscuro transition-colors">
+                <td class="px-6 py-4 text-blanco font-medium">${DIAS[h.dia_semana]}</td>
+                <td class="px-6 py-4 text-gris-claro">${h.hora_inicio}</td>
+                <td class="px-6 py-4 text-gris-claro">${h.hora_fin}</td>
+                <td class="px-6 py-4">
+                    <span class="badge ${h.activo ? 'badge-confirmado' : 'badge-cancelado'}">
+                        ${h.activo ? 'Activo' : 'Inactivo'}
+                    </span>
+                </td>
+                <td class="px-6 py-4">
+                    <button onclick="eliminarHorario(${h.id})"
+                        class="text-xs text-red-400 hover:text-red-300 tracking-wider">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    } catch (err) {
+        console.error('Error cargando horarios:', err);
+    }
+}
+
+async function crearHorario() {
+    const dia = document.getElementById('horario-dia').value;
+    const inicio = document.getElementById('horario-inicio').value;
+    const fin = document.getElementById('horario-fin').value;
+    const mensajeDiv = document.getElementById('horario-mensaje');
+
+    if (!inicio || !fin) {
+        mensajeDiv.classList.remove('hidden');
+        mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
+        mensajeDiv.textContent = 'Completa la hora de inicio y fin.';
+        return;
+    }
+
+    if (inicio >= fin) {
+        mensajeDiv.classList.remove('hidden');
+        mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
+        mensajeDiv.textContent = 'La hora de fin debe ser posterior a la hora de inicio.';
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/api/horarios/`, {
+            method: 'POST',
+            headers: authHeaders(),
+            body: JSON.stringify({
+                dia_semana: parseInt(dia),
+                hora_inicio: inicio + ':00',
+                hora_fin: fin + ':00'
+            })
+        });
+
+        if (res.ok) {
+            mensajeDiv.classList.remove('hidden');
+            mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-dorado text-dorado';
+            mensajeDiv.textContent = `Horario para ${DIAS[dia]} creado correctamente.`;
+            setTimeout(() => {
+                ocultarFormHorario();
+                cargarHorarios();
+            }, 1500);
+        } else {
+            const err = await res.json();
+            mensajeDiv.classList.remove('hidden');
+            mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
+            mensajeDiv.textContent = err.detail || 'Error al crear horario.';
+        }
+    } catch (err) {
+        mensajeDiv.classList.remove('hidden');
+        mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
+        mensajeDiv.textContent = 'Error de conexion.';
+    }
+}
+
+async function eliminarHorario(id) {
+    if (!confirm('Eliminar este horario?')) return;
+    try {
+        await fetch(`${API_BASE}/api/horarios/${id}`, {
+            method: 'DELETE',
+            headers: authHeaders()
+        });
+        cargarHorarios();
+    } catch (err) {
+        console.error('Error eliminando horario:', err);
     }
 }
     </script>
