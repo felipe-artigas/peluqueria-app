@@ -20,6 +20,23 @@ class TurnoBase(BaseModel):
             raise ValueError("No se pueden reservar turnos en fechas pasadas")
         return v
 
+    @field_validator("hora")
+    @classmethod
+    def validar_hora(cls, v: time) -> time:
+        from datetime import time as time_type
+        hora_min = time_type(8, 0)
+        hora_max = time_type(21, 0)
+        if v < hora_min or v > hora_max:
+            raise ValueError("El horario debe estar entre las 8:00 y las 21:00 hs")
+        return v
+
+    @field_validator("notas")
+    @classmethod
+    def validar_notas(cls, v: str | None) -> str | None:
+        if v and len(v) > 500:
+            raise ValueError("Las notas no pueden superar los 500 caracteres")
+        return v
+
 class TurnoCreate(TurnoBase):
     pass
 
@@ -28,15 +45,6 @@ class TurnoUpdate(BaseModel):
     hora: time | None = None
     estado: EstadoTurno | None = None
     notas: str | None = None
-
-class TurnoResponse(TurnoBase):
-    id: int
-    estado: EstadoTurno
-    fecha_creacion: datetime
-    cliente: "ClienteResumen | None" = None
-    servicio: "ServicioResumen | None" = None
-
-    model_config = {"from_attributes": True}
 
 class ClienteResumen(BaseModel):
     id: int
@@ -50,8 +58,13 @@ class ServicioResumen(BaseModel):
     id: int
     nombre: str
     duracion: int
-    precio: "Decimal"
+    precio: Decimal
     model_config = {"from_attributes": True}
 
-TurnoResponse.model_rebuild()
-
+class TurnoResponse(TurnoBase):
+    id: int
+    estado: EstadoTurno
+    fecha_creacion: datetime
+    cliente: ClienteResumen | None = None
+    servicio: ServicioResumen | None = None
+    model_config = {"from_attributes": True}

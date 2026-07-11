@@ -27,3 +27,11 @@ def admin_dashboard(request: Request):
         request=request,
         name="admin/dashboard.html"
     )
+
+@router.get("/404", response_class=HTMLResponse)
+def not_found(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="404.html",
+        status_code=404
+    )
