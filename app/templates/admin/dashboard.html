@@ -205,32 +205,101 @@
                 </div>
             </div>
 
-            <!-- ======= SECCION TURNOS ======= -->
-            <div id="seccion-turnos" class="seccion hidden">
-                <div class="flex justify-between items-start mb-8">
-                    <div>
-                        <p class="section-subtitle">Gestion</p>
-                        <h1 class="font-serif text-3xl text-blanco">Turnos</h1>
-                    </div>
-                </div>
-                <div class="border border-gris-medio overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead class="bg-gris-oscuro">
-                            <tr>
-                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Cliente</th>
-                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Servicio</th>
-                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Fecha</th>
-                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Hora</th>
-                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Estado</th>
-                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="turnos-body">
-                            <tr><td colspan="6" class="text-center py-12 text-gris-claro">Cargando...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+<!-- ======= SECCION TURNOS ======= -->
+<div id="seccion-turnos" class="seccion hidden">
+    <div class="flex justify-between items-start mb-8">
+        <div>
+            <p class="section-subtitle">Gestion</p>
+            <h1 class="font-serif text-3xl text-blanco">Turnos</h1>
+        </div>
+        <button onclick="mostrarFormTurno()" class="btn-ghost">+ Nuevo Turno</button>
+    </div>
+
+    <!-- Formulario nuevo turno -->
+    <div id="form-turno" class="hidden border border-dorado p-8 mb-8">
+        <p class="section-subtitle">Nuevo Turno</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
+                    Email del Cliente
+                </label>
+                <input type="email" id="turno-email"
+                    placeholder="email@ejemplo.com"
+                    class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
+                           focus:outline-none focus:border-dorado transition-colors text-sm">
+                <p id="turno-cliente-nombre" class="text-dorado text-xs mt-2"></p>
             </div>
+            <div>
+                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
+                    Nombre del Cliente (si es nuevo)
+                </label>
+                <input type="text" id="turno-nombre"
+                    placeholder="Nombre"
+                    class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
+                           focus:outline-none focus:border-dorado transition-colors text-sm">
+            </div>
+            <div>
+                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
+                    Apellido del Cliente (si es nuevo)
+                </label>
+                <input type="text" id="turno-apellido"
+                    placeholder="Apellido"
+                    class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
+                           focus:outline-none focus:border-dorado transition-colors text-sm">
+            </div>
+            <div>
+                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
+                    Telefono (si es nuevo)
+                </label>
+                <input type="text" id="turno-telefono"
+                    placeholder="+54 9 11 0000-0000"
+                    class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
+                           focus:outline-none focus:border-dorado transition-colors text-sm">
+            </div>
+            <div>
+                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
+                    Servicio
+                </label>
+                <select id="turno-servicio"
+                    class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
+                           focus:outline-none focus:border-dorado transition-colors text-sm">
+                    <option value="">Selecciona un servicio</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
+                    Fecha
+                </label>
+                <input type="date" id="turno-fecha"
+                    class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
+                           focus:outline-none focus:border-dorado transition-colors text-sm">
+            </div>
+            <div>
+                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
+                    Hora
+                </label>
+                <select id="turno-hora"
+                    class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
+                           focus:outline-none focus:border-dorado transition-colors text-sm">
+                    <option value="">Primero selecciona fecha y servicio</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
+                    Notas (opcional)
+                </label>
+                <input type="text" id="turno-notas"
+                    placeholder="Observaciones"
+                    class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
+                           focus:outline-none focus:border-dorado transition-colors text-sm">
+            </div>
+        </div>
+        <div id="turno-mensaje" class="hidden mt-4 text-xs py-3 px-4 border"></div>
+        <div class="flex gap-4 mt-6">
+            <button onclick="crearTurnoAdmin()" class="btn-solid">Guardar Turno</button>
+            <button onclick="ocultarFormTurno()" class="btn-ghost">Cancelar</button>
+        </div>
+    </div>
 
             <!-- ======= SECCION SERVICIOS ======= -->
             <div id="seccion-servicios" class="seccion hidden">
@@ -723,6 +792,171 @@
         document.addEventListener('DOMContentLoaded', () => {
             iniciarCalendario();
         });
+// ============ FORMULARIO NUEVO TURNO ============
+let clienteIdTurno = null;
+
+function mostrarFormTurno() {
+    document.getElementById('form-turno').classList.remove('hidden');
+    cargarServiciosSelector();
+}
+
+function ocultarFormTurno() {
+    document.getElementById('form-turno').classList.add('hidden');
+    clienteIdTurno = null;
+    document.getElementById('turno-cliente-nombre').textContent = '';
+    document.getElementById('turno-email').value = '';
+    document.getElementById('turno-nombre').value = '';
+    document.getElementById('turno-apellido').value = '';
+    document.getElementById('turno-telefono').value = '';
+    document.getElementById('turno-servicio').value = '';
+    document.getElementById('turno-fecha').value = '';
+    document.getElementById('turno-hora').innerHTML = '<option value="">Primero selecciona fecha y servicio</option>';
+    document.getElementById('turno-notas').value = '';
+    document.getElementById('turno-mensaje').classList.add('hidden');
+}
+
+async function cargarServiciosSelector() {
+    const res = await fetch(`${API_BASE}/api/servicios/`);
+    const servicios = await res.json();
+    const select = document.getElementById('turno-servicio');
+    select.innerHTML = '<option value="">Selecciona un servicio</option>' +
+        servicios.map(s => `<option value="${s.id}">${s.nombre} - $${Number(s.precio).toLocaleString('es-AR')} (${s.duracion} min)</option>`).join('');
+}
+
+// Buscar cliente por email al salir del campo
+document.getElementById('turno-email')?.addEventListener('blur', async () => {
+    const email = document.getElementById('turno-email').value.trim();
+    if (!email) return;
+    try {
+        const res = await fetch(`${API_BASE}/api/clientes/buscar/email/${encodeURIComponent(email)}`, {
+            headers: authHeaders()
+        });
+        if (res.ok) {
+            const cliente = await res.json();
+            clienteIdTurno = cliente.id;
+            document.getElementById('turno-cliente-nombre').textContent =
+                `Cliente encontrado: ${cliente.nombre} ${cliente.apellido}`;
+            document.getElementById('turno-nombre').value = cliente.nombre;
+            document.getElementById('turno-apellido').value = cliente.apellido;
+            document.getElementById('turno-telefono').value = cliente.telefono;
+        } else {
+            clienteIdTurno = null;
+            document.getElementById('turno-cliente-nombre').textContent =
+                'Cliente nuevo - se creara al guardar';
+        }
+    } catch (err) {
+        clienteIdTurno = null;
+    }
+});
+
+// Cargar horarios disponibles cuando cambia fecha o servicio
+document.getElementById('turno-fecha')?.addEventListener('change', cargarHorasTurno);
+document.getElementById('turno-servicio')?.addEventListener('change', cargarHorasTurno);
+
+async function cargarHorasTurno() {
+    const fecha = document.getElementById('turno-fecha').value;
+    const servicioId = document.getElementById('turno-servicio').value;
+    const horaSelect = document.getElementById('turno-hora');
+
+    if (!fecha || !servicioId) return;
+
+    horaSelect.innerHTML = '<option value="">Cargando...</option>';
+    try {
+        const res = await fetch(`${API_BASE}/api/turnos/disponibles/${fecha}/${servicioId}`);
+        const data = await res.json();
+        const horarios = data.horarios_disponibles || [];
+        if (horarios.length === 0) {
+            horaSelect.innerHTML = '<option value="">Sin horarios disponibles</option>';
+        } else {
+            horaSelect.innerHTML = '<option value="">Selecciona un horario</option>' +
+                horarios.map(h => `<option value="${h}">${h}</option>`).join('');
+        }
+    } catch (err) {
+        horaSelect.innerHTML = '<option value="">Error al cargar horarios</option>';
+    }
+}
+
+async function crearTurnoAdmin() {
+    const email = document.getElementById('turno-email').value.trim();
+    const nombre = document.getElementById('turno-nombre').value.trim();
+    const apellido = document.getElementById('turno-apellido').value.trim();
+    const telefono = document.getElementById('turno-telefono').value.trim();
+    const servicioId = document.getElementById('turno-servicio').value;
+    const fecha = document.getElementById('turno-fecha').value;
+    const hora = document.getElementById('turno-hora').value;
+    const notas = document.getElementById('turno-notas').value.trim();
+    const mensajeDiv = document.getElementById('turno-mensaje');
+
+    if (!email || !servicioId || !fecha || !hora) {
+        mensajeDiv.classList.remove('hidden');
+        mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
+        mensajeDiv.textContent = 'Completa todos los campos obligatorios.';
+        return;
+    }
+
+    try {
+        let clienteId = clienteIdTurno;
+
+        // Si no existe el cliente, crearlo
+        if (!clienteId) {
+            if (!nombre || !apellido || !telefono) {
+                mensajeDiv.classList.remove('hidden');
+                mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
+                mensajeDiv.textContent = 'El cliente no existe. Completa nombre, apellido y telefono.';
+                return;
+            }
+            const clienteRes = await fetch(`${API_BASE}/api/clientes/`, {
+                method: 'POST',
+                headers: authHeaders(),
+                body: JSON.stringify({ nombre, apellido, email, telefono })
+            });
+            if (clienteRes.ok) {
+                const cliente = await clienteRes.json();
+                clienteId = cliente.id;
+            } else {
+                const err = await clienteRes.json();
+                mensajeDiv.classList.remove('hidden');
+                mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
+                mensajeDiv.textContent = err.detail || 'Error al crear cliente.';
+                return;
+            }
+        }
+
+        // Crear el turno
+        const turnoRes = await fetch(`${API_BASE}/api/turnos/`, {
+            method: 'POST',
+            headers: authHeaders(),
+            body: JSON.stringify({
+                cliente_id: clienteId,
+                servicio_id: parseInt(servicioId),
+                fecha,
+                hora: hora + ':00',
+                notas: notas || null
+            })
+        });
+
+        if (turnoRes.ok) {
+            mensajeDiv.classList.remove('hidden');
+            mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-dorado text-dorado';
+            mensajeDiv.textContent = `Turno creado correctamente para el ${fecha} a las ${hora} hs.`;
+            setTimeout(() => {
+                ocultarFormTurno();
+                cargarTurnos();
+                calendario = null;
+                iniciarCalendario();
+            }, 2000);
+        } else {
+            const err = await turnoRes.json();
+            mensajeDiv.classList.remove('hidden');
+            mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
+            mensajeDiv.textContent = err.detail || 'Error al crear el turno.';
+        }
+    } catch (err) {
+        mensajeDiv.classList.remove('hidden');
+        mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
+        mensajeDiv.textContent = 'Error de conexion. Intenta nuevamente.';
+    }
+}
     </script>
 </body>
 </html>
