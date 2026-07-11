@@ -1,19 +1,20 @@
 # app/schemas/servicio.py
 
+from datetime import datetime
 from decimal import Decimal
 from pydantic import BaseModel, field_validator
 
 class ServicioBase(BaseModel):
     nombre: str
     descripcion: str | None = None
-    duracion: int  # en minutos
+    duracion: int
     precio: Decimal
 
     @field_validator("duracion")
     @classmethod
     def validar_duracion(cls, v: int) -> int:
         if v < 5 or v > 480:
-            raise ValueError("La duración debe estar entre 5 y 480 minutos")
+            raise ValueError("La duracion debe estar entre 5 y 480 minutos")
         return v
 
     @field_validator("precio")
@@ -37,7 +38,4 @@ class ServicioResponse(ServicioBase):
     id: int
     activo: bool
     fecha_creacion: datetime
-
     model_config = {"from_attributes": True}
-
-from datetime import datetime
