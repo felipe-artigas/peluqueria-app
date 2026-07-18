@@ -3,22 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Peluquería{% endblock %} — Studio</title>
+    <title>{% block title %}PRISMA{% endblock %} — Peluquería</title>
     <meta name="description" content="{% block description %}Sistema profesional de reservas{% endblock %}">
 
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 
-    <!-- CSS compilado -->
+    <!-- CSS -->
     <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        /* ===== CURSOR PERSONALIZADO ===== */
+        *, *::before, *::after { cursor: none !important; }
+
+        #cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: #c9a96e;
+            border-radius: 50%;
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease;
+        }
+
+        #cursor-ring {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(201, 169, 110, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: all 0.15s ease;
+        }
+
+        body:hover #cursor-dot { opacity: 1; }
+        a:hover ~ #cursor-dot,
+        button:hover ~ #cursor-dot { width: 12px; height: 12px; }
+
+        /* ===== IMAGEN DECORATIVA FLOTANTE ===== */
+        .deco-img {
+            position: absolute;
+            opacity: 0.04;
+            pointer-events: none;
+            user-select: none;
+            filter: grayscale(100%);
+        }
+
+        /* ===== WHATSAPP FLOTANTE ===== */
+        #whatsapp-btn {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 52px;
+            height: 52px;
+            background: #25d366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+        }
+        #whatsapp-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 28px rgba(37, 211, 102, 0.45);
+        }
+        #whatsapp-btn svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+    </style>
 
     {% block extra_css %}{% endblock %}
 </head>
 <body class="bg-negro text-blanco">
 
-    <!-- Navegación -->
+    <!-- Cursor personalizado -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- Navegacion -->
     <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="flex items-center justify-between h-20">
@@ -26,7 +101,7 @@
                 <!-- Logo -->
                 <a href="/" class="flex items-center gap-3">
                     <div class="w-8 h-px bg-dorado"></div>
-                    <span class="font-serif text-xl text-blanco tracking-wider">STUDIO</span>
+                    <span style="font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; letter-spacing: 0.25em; font-weight: 300;" class="text-blanco">PRISMA</span>
                     <div class="w-8 h-px bg-dorado"></div>
                 </a>
 
@@ -34,19 +109,17 @@
                 <div class="hidden md:flex items-center gap-10">
                     <a href="/#servicios" class="nav-link">Servicios</a>
                     <a href="/#nosotros" class="nav-link">Nosotros</a>
-                    <a href="/#ubicacion" class="nav-link">Ubicación</a>
+                    <a href="/#ubicacion" class="nav-link">Ubicacion</a>
                     <a href="/#contacto" class="nav-link">Contacto</a>
                 </div>
 
-                <!-- Botón reservar -->
+                <!-- Boton reservar -->
                 <div class="hidden md:block">
-                    <a href="/#reservar" class="btn-ghost text-xs">
-                        Reservar Turno
-                    </a>
+                    <a href="/#reservar" class="btn-ghost">Reservar Turno</a>
                 </div>
 
-                <!-- Menú móvil -->
-                <button id="menu-toggle" class="md:hidden text-blanco p-2">
+                <!-- Menu movil -->
+                <button id="menu-toggle" class="md:hidden text-blanco p-2" aria-label="Menu">
                     <div class="w-6 h-px bg-blanco mb-1.5 transition-all" id="line1"></div>
                     <div class="w-6 h-px bg-blanco mb-1.5 transition-all" id="line2"></div>
                     <div class="w-4 h-px bg-blanco transition-all" id="line3"></div>
@@ -54,12 +127,12 @@
             </div>
         </div>
 
-        <!-- Menú móvil expandido -->
+        <!-- Menu movil expandido -->
         <div id="mobile-menu" class="hidden md:hidden bg-negro-suave border-t border-gris-medio">
             <div class="px-6 py-8 flex flex-col gap-6">
                 <a href="/#servicios" class="nav-link text-base">Servicios</a>
                 <a href="/#nosotros" class="nav-link text-base">Nosotros</a>
-                <a href="/#ubicacion" class="nav-link text-base">Ubicación</a>
+                <a href="/#ubicacion" class="nav-link text-base">Ubicacion</a>
                 <a href="/#contacto" class="nav-link text-base">Contacto</a>
                 <a href="/#reservar" class="btn-ghost text-center mt-4">Reservar Turno</a>
             </div>
@@ -80,13 +153,46 @@
                 <div>
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-6 h-px bg-dorado"></div>
-                        <span class="font-serif text-lg text-blanco">STUDIO</span>
+                        <span style="font-family: 'Cormorant Garamond', serif; letter-spacing: 0.25em; font-weight: 300;" class="text-lg text-blanco">PRISMA</span>
                         <div class="w-6 h-px bg-dorado"></div>
                     </div>
-                    <p class="text-gris-claro text-sm leading-relaxed">
-                        Estética y cuidado capilar de nivel profesional.
-                        Tu imagen, nuestra pasión.
+                    <p class="text-gris-claro text-sm leading-relaxed mb-6">
+                        Estetica y cuidado capilar de nivel profesional.
+                        Tu imagen, nuestra pasion.
                     </p>
+                    <!-- Redes sociales -->
+                    <div class="flex items-center gap-4 mt-4">
+                        <a href="https://instagram.com" target="_blank" rel="noopener"
+                           aria-label="Instagram"
+                           class="text-gris-claro hover:text-dorado transition-colors duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                        <a href="https://facebook.com" target="_blank" rel="noopener"
+                           aria-label="Facebook"
+                           class="text-gris-claro hover:text-dorado transition-colors duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </a>
+                        <a href="https://tiktok.com" target="_blank" rel="noopener"
+                           aria-label="TikTok"
+                           class="text-gris-claro hover:text-dorado transition-colors duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
+                            </svg>
+                        </a>
+                        <a href="https://wa.me/5491100000000" target="_blank" rel="noopener"
+                           aria-label="WhatsApp"
+                           class="text-gris-claro hover:text-dorado transition-colors duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Horarios -->
@@ -98,7 +204,7 @@
                             <span class="text-blanco">9:00 — 20:00</span>
                         </div>
                         <div class="flex justify-between">
-                            <span>Sábados</span>
+                            <span>Sabados</span>
                             <span class="text-blanco">9:00 — 18:00</span>
                         </div>
                         <div class="flex justify-between">
@@ -112,16 +218,16 @@
                 <div>
                     <p class="section-subtitle text-left">Contacto</p>
                     <div class="space-y-2 text-sm text-gris-claro">
-                        <p>📍 Tu dirección, Ciudad</p>
-                        <p>📞 +54 9 11 0000-0000</p>
-                        <p>✉️ info@studio.com</p>
+                        <p>Tu direccion, Ciudad</p>
+                        <p>+54 9 11 0000-0000</p>
+                        <p>info@prisma.com</p>
                     </div>
                 </div>
             </div>
 
             <div class="border-t border-gris-medio mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                 <p class="text-gris-claro text-xs tracking-wider">
-                    © 2024 STUDIO. Todos los derechos reservados.
+                    &copy; 2026 PRISMA. Todos los derechos reservados.
                 </p>
                 <a href="/admin/login" class="text-gris-claro text-xs hover:text-dorado transition-colors">
                     Acceso Administrador
@@ -130,8 +236,75 @@
         </div>
     </footer>
 
+    <!-- Boton flotante WhatsApp -->
+    <a id="whatsapp-btn" href="https://wa.me/5491100000000" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+        </svg>
+    </a>
+
     <!-- JavaScript base -->
     <script src="/static/js/main.js"></script>
+    <script>
+        // Cursor personalizado
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mouseX = 0, mouseY = 0;
+        let ringX = 0, ringY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            dot.style.left = mouseX + 'px';
+            dot.style.top = mouseY + 'px';
+        });
+
+        function animateRing() {
+            ringX += (mouseX - ringX) * 0.12;
+            ringY += (mouseY - ringY) * 0.12;
+            ring.style.left = ringX + 'px';
+            ring.style.top = ringY + 'px';
+            requestAnimationFrame(animateRing);
+        }
+        animateRing();
+
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                dot.style.transform = 'translate(-50%, -50%) scale(2)';
+                ring.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                ring.style.borderColor = 'rgba(201, 169, 110, 0.8)';
+            });
+            el.addEventListener('mouseleave', () => {
+                dot.style.transform = 'translate(-50%, -50%) scale(1)';
+                ring.style.transform = 'translate(-50%, -50%) scale(1)';
+                ring.style.borderColor = 'rgba(201, 169, 110, 0.5)';
+            });
+        });
+
+        // Menu movil
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Navbar scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-negro', 'border-b', 'border-gris-medio', 'shadow-lg');
+            } else {
+                navbar.classList.remove('bg-negro', 'border-b', 'border-gris-medio', 'shadow-lg');
+            }
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

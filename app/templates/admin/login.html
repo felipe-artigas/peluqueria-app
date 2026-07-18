@@ -3,12 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Administrador — Studio</title>
+    <title>Acceso Administrador — PRISMA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        *, *::before, *::after { cursor: none !important; }
+        #cursor-dot {
+            width: 8px; height: 8px; background: #c9a96e; border-radius: 50%;
+            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%); transition: transform 0.1s ease;
+        }
+        #cursor-ring {
+            width: 36px; height: 36px; border: 1px solid rgba(201,169,110,0.4);
+            border-radius: 50%; position: fixed; top: 0; left: 0;
+            pointer-events: none; z-index: 9998; transform: translate(-50%, -50%);
+            transition: all 0.15s ease;
+        }
+    </style>
 </head>
-<body class="bg-negro min-h-screen flex items-center justify-center">
+<body class="bg-negro min-h-screen flex items-center justify-center" style="font-family: 'Jost', sans-serif;">
+
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
 
     <div class="w-full max-w-md px-6">
 
@@ -16,67 +33,73 @@
         <div class="text-center mb-12">
             <div class="flex items-center justify-center gap-3 mb-4">
                 <div class="w-8 h-px bg-dorado"></div>
-                <span class="font-serif text-2xl text-blanco">STUDIO</span>
+                <span style="font-family: 'Cormorant Garamond', serif; letter-spacing: 0.25em; font-weight: 300;" class="text-2xl text-blanco">PRISMA</span>
                 <div class="w-8 h-px bg-dorado"></div>
             </div>
-            <p class="text-xs tracking-widest uppercase text-gris-claro">Panel de Administración</p>
+            <p class="text-xs tracking-widest uppercase text-gris-claro">Panel de Administracion</p>
         </div>
 
         <!-- Formulario -->
         <div class="border border-gris-medio p-10">
-            <p class="section-subtitle text-center mb-8">Iniciar Sesión</p>
+            <p class="section-subtitle text-center mb-8">Iniciar Sesion</p>
 
             <div class="space-y-6">
                 <div>
-                    <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
-                        Usuario
-                    </label>
-                    <input type="text" id="usuario"
+                    <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Usuario</label>
+                    <input type="text" id="usuario" autocomplete="username"
                         class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
                                focus:outline-none focus:border-dorado transition-colors text-sm"
                         placeholder="Tu usuario">
                 </div>
                 <div>
-                    <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
-                        Contraseña
-                    </label>
-                    <input type="password" id="contrasena"
+                    <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Contrasena</label>
+                    <input type="password" id="contrasena" autocomplete="current-password"
                         class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
                                focus:outline-none focus:border-dorado transition-colors text-sm"
-                        placeholder="Tu contraseña">
+                        placeholder="Tu contrasena">
                 </div>
 
                 <div id="error-login" class="hidden text-red-400 text-xs text-center py-3 border border-red-500 bg-red-500/5"></div>
 
-                <button onclick="login()"
-                    class="btn-solid w-full text-center py-4 mt-4">
+                <button onclick="login()" class="btn-solid w-full text-center py-4 mt-4">
                     Ingresar
                 </button>
             </div>
         </div>
 
         <div class="text-center mt-8">
-            <a href="/" class="nav-link">← Volver al sitio</a>
+            <a href="/" class="nav-link">Volver al sitio</a>
         </div>
     </div>
 
     <script>
         const API_BASE = window.location.origin;
 
-        // Si ya está logueado, redirigir al dashboard
         if (localStorage.getItem('admin_token')) {
             window.location.href = '/admin/dashboard';
         }
+
+        // Cursor
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX; mouseY = e.clientY;
+            dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
+        });
+        function animateRing() {
+            ringX += (mouseX - ringX) * 0.12; ringY += (mouseY - ringY) * 0.12;
+            ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
+            requestAnimationFrame(animateRing);
+        }
+        animateRing();
 
         async function login() {
             const usuario = document.getElementById('usuario').value.trim();
             const contrasena = document.getElementById('contrasena').value.trim();
             const errorDiv = document.getElementById('error-login');
 
-            if (!usuario || !contrasena) {
-                mostrarError('Completá todos los campos');
-                return;
-            }
+            if (!usuario || !contrasena) { mostrarError('Completa todos los campos'); return; }
 
             try {
                 const res = await fetch(`${API_BASE}/api/auth/login`, {
@@ -91,10 +114,10 @@
                     localStorage.setItem('admin_nombre', data.administrador.nombre);
                     window.location.href = '/admin/dashboard';
                 } else {
-                    mostrarError('Usuario o contraseña incorrectos');
+                    mostrarError('Usuario o contrasena incorrectos');
                 }
             } catch (err) {
-                mostrarError('Error de conexión');
+                mostrarError('Error de conexion');
             }
         }
 
@@ -104,10 +127,7 @@
             div.classList.remove('hidden');
         }
 
-        // Login con Enter
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') login();
-        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
     </script>
 </body>
 </html>

@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard — Studio Admin</title>
+    <title>Dashboard — PRISMA Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
 
     <!-- FullCalendar -->
@@ -13,161 +13,110 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 
     <style>
-        .fc {
-            font-family: 'Inter', sans-serif;
+        *, *::before, *::after { cursor: none !important; }
+        #cursor-dot {
+            width: 8px; height: 8px; background: #c9a96e; border-radius: 50%;
+            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%); transition: transform 0.1s ease;
         }
-        .fc-theme-standard td, .fc-theme-standard th {
-            border-color: #2a2a2a;
+        #cursor-ring {
+            width: 36px; height: 36px; border: 1px solid rgba(201,169,110,0.4);
+            border-radius: 50%; position: fixed; top: 0; left: 0;
+            pointer-events: none; z-index: 9998; transform: translate(-50%, -50%);
+            transition: all 0.15s ease;
         }
-        .fc-theme-standard .fc-scrollgrid {
-            border-color: #2a2a2a;
-        }
+
+        .fc { font-family: 'Jost', sans-serif; }
+        .fc-theme-standard td, .fc-theme-standard th { border-color: #2a2a2a; }
+        .fc-theme-standard .fc-scrollgrid { border-color: #2a2a2a; }
         .fc-col-header-cell {
-            background-color: #111111;
-            color: #888888;
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            padding: 12px 0;
+            background-color: #111111; color: #888888;
+            font-size: 11px; font-weight: 400; letter-spacing: 0.12em;
+            text-transform: uppercase; padding: 12px 0;
         }
-        .fc-daygrid-day {
-            background-color: #0a0a0a;
-        }
-        .fc-daygrid-day:hover {
-            background-color: #111111;
-        }
-        .fc-daygrid-day-number {
-            color: #888888;
-            font-size: 12px;
-            padding: 8px;
-        }
-        .fc-day-today {
-            background-color: #1a1a1a !important;
-        }
-        .fc-day-today .fc-daygrid-day-number {
-            color: #c9a96e;
-            font-weight: 600;
-        }
+        .fc-daygrid-day { background-color: #0a0a0a; }
+        .fc-daygrid-day:hover { background-color: #111111; }
+        .fc-daygrid-day-number { color: #888888; font-size: 12px; padding: 8px; }
+        .fc-day-today { background-color: #1a1a1a !important; }
+        .fc-day-today .fc-daygrid-day-number { color: #c9a96e; font-weight: 500; }
         .fc-button-primary {
-            background-color: transparent !important;
-            border-color: #2a2a2a !important;
-            color: #888888 !important;
-            font-size: 11px !important;
-            letter-spacing: 0.1em !important;
-            text-transform: uppercase !important;
-            padding: 6px 14px !important;
-            transition: all 0.3s !important;
+            background-color: transparent !important; border-color: #2a2a2a !important;
+            color: #888888 !important; font-size: 11px !important;
+            letter-spacing: 0.1em !important; text-transform: uppercase !important;
+            padding: 6px 14px !important; transition: all 0.3s !important;
+            font-family: 'Jost', sans-serif !important;
         }
-        .fc-button-primary:hover {
-            border-color: #c9a96e !important;
-            color: #c9a96e !important;
-        }
+        .fc-button-primary:hover { border-color: #c9a96e !important; color: #c9a96e !important; }
         .fc-button-primary:not(:disabled).fc-button-active {
-            background-color: #c9a96e !important;
-            border-color: #c9a96e !important;
-            color: #0a0a0a !important;
+            background-color: #c9a96e !important; border-color: #c9a96e !important; color: #0a0a0a !important;
         }
         .fc-toolbar-title {
-            color: #f5f5f5;
-            font-family: 'Playfair Display', serif;
-            font-size: 20px !important;
+            color: #f5f5f5 !important;
+            font-family: 'Cormorant Garamond', serif !important;
+            font-size: 20px !important; font-weight: 300 !important;
         }
-        .fc-event {
-            border: none !important;
-            border-radius: 0 !important;
-            font-size: 11px !important;
-            padding: 2px 6px !important;
-            cursor: pointer;
-        }
+        .fc-event { border: none !important; border-radius: 0 !important; font-size: 11px !important; padding: 2px 6px !important; }
         .fc-event-pendiente { background-color: #c9a96e !important; color: #0a0a0a !important; }
         .fc-event-confirmado { background-color: #4ade80 !important; color: #0a0a0a !important; }
         .fc-event-cancelado { background-color: #f87171 !important; color: #fff !important; }
         .fc-event-completado { background-color: #60a5fa !important; color: #0a0a0a !important; }
-        .fc-popover {
-            background-color: #111111 !important;
-            border-color: #2a2a2a !important;
-        }
-        .fc-popover-title {
-            color: #f5f5f5 !important;
-            background-color: #1a1a1a !important;
-        }
+        .fc-popover { background-color: #111111 !important; border-color: #2a2a2a !important; }
+        .fc-popover-title { color: #f5f5f5 !important; background-color: #1a1a1a !important; }
+
         .sidebar-link {
-            color: #888888;
-            border-left: 2px solid transparent;
-            display: block;
+            color: #888888; border-left: 2px solid transparent;
+            display: block; text-decoration: none;
+            font-family: 'Jost', sans-serif;
         }
         .sidebar-link:hover, .sidebar-link.active {
-            color: #c9a96e;
-            border-left-color: #c9a96e;
+            color: #c9a96e; border-left-color: #c9a96e;
             background-color: rgba(201, 169, 110, 0.05);
         }
         .badge {
-            display: inline-block;
-            padding: 2px 10px;
-            font-size: 10px;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            font-weight: 500;
+            display: inline-block; padding: 2px 10px;
+            font-size: 10px; letter-spacing: 0.1em;
+            text-transform: uppercase; font-weight: 400;
         }
         .badge-pendiente { background: rgba(201,169,110,0.15); color: #c9a96e; }
         .badge-confirmado { background: rgba(74,222,128,0.15); color: #4ade80; }
         .badge-cancelado { background: rgba(248,113,113,0.15); color: #f87171; }
         .badge-completado { background: rgba(96,165,250,0.15); color: #60a5fa; }
+        .badge-activo { background: rgba(74,222,128,0.15); color: #4ade80; }
+        .badge-inactivo { background: rgba(248,113,113,0.15); color: #f87171; }
     </style>
 </head>
-<body class="bg-negro text-blanco min-h-screen">
+<body class="bg-negro text-blanco min-h-screen" style="font-family: 'Jost', sans-serif;">
+
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
 
     <div class="flex min-h-screen">
 
         <!-- Sidebar -->
         <aside style="width: 220px; min-width: 220px;" class="bg-negro-suave border-r border-gris-medio flex flex-col fixed h-full z-40">
 
-            <!-- Logo -->
             <div class="p-8 border-b border-gris-medio">
                 <div class="flex items-center gap-3">
                     <div class="w-6 h-px bg-dorado"></div>
-                    <span class="font-serif text-lg text-blanco">STUDIO</span>
+                    <span style="font-family: 'Cormorant Garamond', serif; letter-spacing: 0.25em; font-weight: 300;" class="text-lg text-blanco">PRISMA</span>
                     <div class="w-6 h-px bg-dorado"></div>
                 </div>
-                <p class="text-xs text-gris-claro mt-2 tracking-wider">Administración</p>
+                <p class="text-xs text-gris-claro mt-2 tracking-wider">Administracion</p>
             </div>
 
-            <!-- Navegación -->
             <nav class="flex-1 p-4 space-y-1">
-                <a href="#" onclick="mostrarSeccion('calendario', event)"
-                   class="sidebar-link active px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
-                    Calendario
-                </a>
-                <a href="#" onclick="mostrarSeccion('turnos', event)"
-                   class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
-                    Turnos
-                </a>
-                <a href="#" onclick="mostrarSeccion('servicios', event)"
-                   class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
-                    Servicios
-                </a>
-<a href="#" onclick="mostrarSeccion('horarios', event)"
-   class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
-    Horarios
-</a>
-                <a href="#" onclick="mostrarSeccion('clientes', event)"
-                   class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
-                    Clientes
-                </a>
-                <a href="#" onclick="mostrarSeccion('estadisticas', event)"
-                   class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">
-                    Estadisticas
-                </a>
+                <a href="#" onclick="mostrarSeccion('calendario', event)" class="sidebar-link active px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">Calendario</a>
+                <a href="#" onclick="mostrarSeccion('turnos', event)" class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">Turnos</a>
+                <a href="#" onclick="mostrarSeccion('horarios', event)" class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">Horarios</a>
+                <a href="#" onclick="mostrarSeccion('servicios', event)" class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">Servicios</a>
+                <a href="#" onclick="mostrarSeccion('clientes', event)" class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">Clientes</a>
+                <a href="#" onclick="mostrarSeccion('estadisticas', event)" class="sidebar-link px-4 py-3 text-xs tracking-widest uppercase transition-all duration-300">Estadisticas</a>
             </nav>
 
-            <!-- Usuario y logout -->
             <div class="p-6 border-t border-gris-medio">
                 <p class="text-xs text-gris-claro mb-1">Conectado como</p>
                 <p id="admin-nombre" class="text-blanco text-sm font-medium mb-4"></p>
-                <button onclick="logout()"
-                    class="w-full text-xs tracking-widest uppercase text-gris-claro
-                           hover:text-red-400 transition-colors text-left">
+                <button onclick="logout()" class="w-full text-xs tracking-widest uppercase text-gris-claro hover:text-red-400 transition-colors text-left">
                     Cerrar sesion
                 </button>
             </div>
@@ -176,146 +125,193 @@
         <!-- Contenido principal -->
         <main style="margin-left: 220px;" class="flex-1 p-8 min-w-0 overflow-x-hidden">
 
-            <!-- ======= SECCION CALENDARIO ======= -->
+            <!-- CALENDARIO -->
             <div id="seccion-calendario" class="seccion">
                 <div class="mb-8">
                     <p class="section-subtitle">Agenda</p>
-                    <h1 class="font-serif text-3xl text-blanco">Calendario de Turnos</h1>
+                    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300;" class="text-3xl text-blanco">Calendario de Turnos</h1>
                 </div>
-
-                <!-- Stats rapidas -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <div class="border border-gris-medio p-6 text-center">
-                        <p id="stat-hoy" class="font-serif text-3xl text-dorado">0</p>
+                        <p id="stat-hoy" style="font-family: 'Cormorant Garamond', serif; font-weight: 300;" class="text-3xl text-dorado">0</p>
                         <p class="text-xs tracking-widest text-gris-claro uppercase mt-1">Hoy</p>
                     </div>
                     <div class="border border-gris-medio p-6 text-center">
-                        <p id="stat-pendientes" class="font-serif text-3xl text-dorado">0</p>
+                        <p id="stat-pendientes" style="font-family: 'Cormorant Garamond', serif; font-weight: 300;" class="text-3xl text-dorado">0</p>
                         <p class="text-xs tracking-widest text-gris-claro uppercase mt-1">Pendientes</p>
                     </div>
                     <div class="border border-gris-medio p-6 text-center">
-                        <p id="stat-completados" class="font-serif text-3xl text-dorado">0</p>
+                        <p id="stat-completados" style="font-family: 'Cormorant Garamond', serif; font-weight: 300;" class="text-3xl text-dorado">0</p>
                         <p class="text-xs tracking-widest text-gris-claro uppercase mt-1">Completados</p>
                     </div>
                     <div class="border border-gris-medio p-6 text-center">
-                        <p id="stat-total" class="font-serif text-3xl text-dorado">0</p>
+                        <p id="stat-total" style="font-family: 'Cormorant Garamond', serif; font-weight: 300;" class="text-3xl text-dorado">0</p>
                         <p class="text-xs tracking-widest text-gris-claro uppercase mt-1">Total</p>
                     </div>
                 </div>
-
-                <!-- Calendario -->
                 <div class="border border-gris-medio p-6">
                     <div id="calendario"></div>
                 </div>
             </div>
 
-<!-- ======= SECCION TURNOS ======= -->
-<div id="seccion-turnos" class="seccion hidden">
-    <div class="flex justify-between items-start mb-8">
-        <div>
-            <p class="section-subtitle">Gestion</p>
-            <h1 class="font-serif text-3xl text-blanco">Turnos</h1>
-        </div>
-        <button onclick="mostrarFormTurno()" class="btn-ghost">+ Nuevo Turno</button>
-    </div>
+            <!-- TURNOS -->
+            <div id="seccion-turnos" class="seccion hidden">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <p class="section-subtitle">Gestion</p>
+                        <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300;" class="text-3xl text-blanco">Turnos</h1>
+                    </div>
+                    <button onclick="mostrarFormTurno()" class="btn-ghost">+ Nuevo Turno</button>
+                </div>
 
-    <!-- Formulario nuevo turno -->
-    <div id="form-turno" class="hidden border border-dorado p-8 mb-8">
-        <p class="section-subtitle">Nuevo Turno</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
-                    Email del Cliente
-                </label>
-                <input type="email" id="turno-email"
-                    placeholder="email@ejemplo.com"
-                    class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
-                           focus:outline-none focus:border-dorado transition-colors text-sm">
-                <p id="turno-cliente-nombre" class="text-dorado text-xs mt-2"></p>
-            </div>
-            <div>
-                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
-                    Nombre del Cliente (si es nuevo)
-                </label>
-                <input type="text" id="turno-nombre"
-                    placeholder="Nombre"
-                    class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
-                           focus:outline-none focus:border-dorado transition-colors text-sm">
-            </div>
-            <div>
-                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
-                    Apellido del Cliente (si es nuevo)
-                </label>
-                <input type="text" id="turno-apellido"
-                    placeholder="Apellido"
-                    class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
-                           focus:outline-none focus:border-dorado transition-colors text-sm">
-            </div>
-            <div>
-                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
-                    Telefono (si es nuevo)
-                </label>
-                <input type="text" id="turno-telefono"
-                    placeholder="+54 9 11 0000-0000"
-                    class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
-                           focus:outline-none focus:border-dorado transition-colors text-sm">
-            </div>
-            <div>
-                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
-                    Servicio
-                </label>
-                <select id="turno-servicio"
-                    class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
-                           focus:outline-none focus:border-dorado transition-colors text-sm">
-                    <option value="">Selecciona un servicio</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
-                    Fecha
-                </label>
-                <input type="date" id="turno-fecha"
-                    class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
-                           focus:outline-none focus:border-dorado transition-colors text-sm">
-            </div>
-            <div>
-                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
-                    Hora
-                </label>
-                <select id="turno-hora"
-                    class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
-                           focus:outline-none focus:border-dorado transition-colors text-sm">
-                    <option value="">Primero selecciona fecha y servicio</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
-                    Notas (opcional)
-                </label>
-                <input type="text" id="turno-notas"
-                    placeholder="Observaciones"
-                    class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3
-                           focus:outline-none focus:border-dorado transition-colors text-sm">
-            </div>
-        </div>
-        <div id="turno-mensaje" class="hidden mt-4 text-xs py-3 px-4 border"></div>
-        <div class="flex gap-4 mt-6">
-            <button onclick="crearTurnoAdmin()" class="btn-solid">Guardar Turno</button>
-            <button onclick="ocultarFormTurno()" class="btn-ghost">Cancelar</button>
-        </div>
-    </div>
+                <!-- Formulario nuevo turno -->
+                <div id="form-turno" class="hidden border border-dorado p-8 mb-8">
+                    <p class="section-subtitle">Nuevo Turno</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Email del Cliente</label>
+                            <input type="email" id="turno-email" placeholder="email@ejemplo.com"
+                                class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3 focus:outline-none focus:border-dorado transition-colors text-sm">
+                            <p id="turno-cliente-nombre" class="text-dorado text-xs mt-2"></p>
+                        </div>
+                        <div>
+                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Nombre (si es nuevo)</label>
+                            <input type="text" id="turno-nombre" placeholder="Nombre"
+                                class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3 focus:outline-none focus:border-dorado transition-colors text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Apellido (si es nuevo)</label>
+                            <input type="text" id="turno-apellido" placeholder="Apellido"
+                                class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3 focus:outline-none focus:border-dorado transition-colors text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Telefono (si es nuevo)</label>
+                            <input type="text" id="turno-telefono" placeholder="+54 9 11 0000-0000"
+                                class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3 focus:outline-none focus:border-dorado transition-colors text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Servicio</label>
+                            <select id="turno-servicio"
+                                class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3 focus:outline-none focus:border-dorado transition-colors text-sm">
+                                <option value="">Selecciona un servicio</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Fecha</label>
+                            <input type="date" id="turno-fecha"
+                                class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3 focus:outline-none focus:border-dorado transition-colors text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Hora</label>
+                            <select id="turno-hora"
+                                class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3 focus:outline-none focus:border-dorado transition-colors text-sm">
+                                <option value="">Primero selecciona fecha y servicio</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Notas (opcional)</label>
+                            <input type="text" id="turno-notas" placeholder="Observaciones"
+                                class="w-full bg-transparent border-b border-gris-medio text-blanco pb-3 focus:outline-none focus:border-dorado transition-colors text-sm">
+                        </div>
+                    </div>
+                    <div id="turno-mensaje" class="hidden mt-4 text-xs py-3 px-4 border"></div>
+                    <div class="flex gap-4 mt-6">
+                        <button onclick="crearTurnoAdmin()" class="btn-solid">Guardar Turno</button>
+                        <button onclick="ocultarFormTurno()" class="btn-ghost">Cancelar</button>
+                    </div>
+                </div>
 
-            <!-- ======= SECCION SERVICIOS ======= -->
+                <div class="border border-gris-medio overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gris-oscuro">
+                            <tr>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Cliente</th>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Servicio</th>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Fecha</th>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Hora</th>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Estado</th>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="turnos-body">
+                            <tr><td colspan="6" class="text-center py-12 text-gris-claro">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- HORARIOS -->
+            <div id="seccion-horarios" class="seccion hidden">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <p class="section-subtitle">Gestion</p>
+                        <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300;" class="text-3xl text-blanco">Horarios Disponibles</h1>
+                    </div>
+                    <button onclick="mostrarFormHorario()" class="btn-ghost">+ Nuevo Horario</button>
+                </div>
+
+                <div id="form-horario" class="hidden border border-dorado p-8 mb-8">
+                    <p class="section-subtitle">Agregar Horario</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Dia de la semana</label>
+                            <select id="horario-dia"
+                                class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3 focus:outline-none focus:border-dorado transition-colors text-sm">
+                                <option value="0">Lunes</option>
+                                <option value="1">Martes</option>
+                                <option value="2">Miercoles</option>
+                                <option value="3">Jueves</option>
+                                <option value="4">Viernes</option>
+                                <option value="5">Sabado</option>
+                                <option value="6">Domingo</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Hora de inicio</label>
+                            <input type="time" id="horario-inicio"
+                                class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3 focus:outline-none focus:border-dorado transition-colors text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">Hora de fin</label>
+                            <input type="time" id="horario-fin"
+                                class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3 focus:outline-none focus:border-dorado transition-colors text-sm">
+                        </div>
+                    </div>
+                    <div id="horario-mensaje" class="hidden mt-4 text-xs py-3 px-4 border"></div>
+                    <div class="flex gap-4 mt-6">
+                        <button onclick="crearHorario()" class="btn-solid">Guardar</button>
+                        <button onclick="ocultarFormHorario()" class="btn-ghost">Cancelar</button>
+                    </div>
+                </div>
+
+                <div class="border border-gris-medio overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gris-oscuro">
+                            <tr>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Dia</th>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Hora inicio</th>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Hora fin</th>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Estado</th>
+                                <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="horarios-body">
+                            <tr><td colspan="5" class="text-center py-12 text-gris-claro">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SERVICIOS -->
             <div id="seccion-servicios" class="seccion hidden">
                 <div class="flex justify-between items-start mb-8">
                     <div>
                         <p class="section-subtitle">Gestion</p>
-                        <h1 class="font-serif text-3xl text-blanco">Servicios</h1>
+                        <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300;" class="text-3xl text-blanco">Servicios</h1>
                     </div>
                     <button onclick="mostrarFormServicio()" class="btn-ghost">+ Nuevo Servicio</button>
                 </div>
 
-                <!-- Formulario nuevo servicio -->
                 <div id="form-servicio" class="hidden border border-dorado p-8 mb-8">
                     <p class="section-subtitle">Nuevo Servicio</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -364,11 +360,11 @@
                 </div>
             </div>
 
-            <!-- ======= SECCION CLIENTES ======= -->
+            <!-- CLIENTES -->
             <div id="seccion-clientes" class="seccion hidden">
                 <div class="mb-8">
                     <p class="section-subtitle">Gestion</p>
-                    <h1 class="font-serif text-3xl text-blanco">Clientes</h1>
+                    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300;" class="text-3xl text-blanco">Clientes</h1>
                 </div>
                 <div class="border border-gris-medio overflow-x-auto">
                     <table class="w-full text-sm">
@@ -387,85 +383,11 @@
                 </div>
             </div>
 
-
-<!-- ======= SECCION HORARIOS ======= -->
-<div id="seccion-horarios" class="seccion hidden">
-    <div class="flex justify-between items-start mb-8">
-        <div>
-            <p class="section-subtitle">Gestion</p>
-            <h1 class="font-serif text-3xl text-blanco">Horarios Disponibles</h1>
-        </div>
-        <button onclick="mostrarFormHorario()" class="btn-ghost">+ Nuevo Horario</button>
-    </div>
-
-    <!-- Formulario nuevo horario -->
-    <div id="form-horario" class="hidden border border-dorado p-8 mb-8">
-        <p class="section-subtitle">Agregar Horario</p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
-                    Dia de la semana
-                </label>
-                <select id="horario-dia"
-                    class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
-                           focus:outline-none focus:border-dorado transition-colors text-sm">
-                    <option value="0">Lunes</option>
-                    <option value="1">Martes</option>
-                    <option value="2">Miercoles</option>
-                    <option value="3">Jueves</option>
-                    <option value="4">Viernes</option>
-                    <option value="5">Sabado</option>
-                    <option value="6">Domingo</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
-                    Hora de inicio
-                </label>
-                <input type="time" id="horario-inicio"
-                    class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
-                           focus:outline-none focus:border-dorado transition-colors text-sm">
-            </div>
-            <div>
-                <label class="block text-xs tracking-widest uppercase text-gris-claro mb-3">
-                    Hora de fin
-                </label>
-                <input type="time" id="horario-fin"
-                    class="w-full bg-gris-oscuro border border-gris-medio text-blanco px-4 py-3
-                           focus:outline-none focus:border-dorado transition-colors text-sm">
-            </div>
-        </div>
-        <div id="horario-mensaje" class="hidden mt-4 text-xs py-3 px-4 border"></div>
-        <div class="flex gap-4 mt-6">
-            <button onclick="crearHorario()" class="btn-solid">Guardar</button>
-            <button onclick="ocultarFormHorario()" class="btn-ghost">Cancelar</button>
-        </div>
-    </div>
-
-    <!-- Tabla de horarios -->
-    <div class="border border-gris-medio overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead class="bg-gris-oscuro">
-                <tr>
-                    <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Dia</th>
-                    <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Hora inicio</th>
-                    <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Hora fin</th>
-                    <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Estado</th>
-                    <th class="text-left px-6 py-4 text-xs tracking-widest uppercase text-gris-claro">Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="horarios-body">
-                <tr><td colspan="5" class="text-center py-12 text-gris-claro">Cargando...</td></tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-            <!-- ======= SECCION ESTADISTICAS ======= -->
+            <!-- ESTADISTICAS -->
             <div id="seccion-estadisticas" class="seccion hidden">
                 <div class="mb-8">
                     <p class="section-subtitle">Resumen</p>
-                    <h1 class="font-serif text-3xl text-blanco">Estadisticas</h1>
+                    <h1 style="font-family: 'Cormorant Garamond', serif; font-weight: 300;" class="text-3xl text-blanco">Estadisticas</h1>
                 </div>
                 <div id="contenido-estadisticas" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <p class="text-gris-claro col-span-2">Cargando estadisticas...</p>
@@ -491,53 +413,60 @@
         const API_BASE = window.location.origin;
         let token = localStorage.getItem('admin_token');
         let calendario = null;
-        let turnoSeleccionado = null;
+        let clienteIdTurno = null;
+        const DIAS = { 0: 'Lunes', 1: 'Martes', 2: 'Miercoles', 3: 'Jueves', 4: 'Viernes', 5: 'Sabado', 6: 'Domingo' };
 
-        if (!token) {
-            window.location.href = '/admin/login';
-        }
+        if (!token) window.location.href = '/admin/login';
 
-        document.getElementById('admin-nombre').textContent =
-            localStorage.getItem('admin_nombre') || 'Administrador';
+        document.getElementById('admin-nombre').textContent = localStorage.getItem('admin_nombre') || 'Administrador';
 
         function authHeaders() {
-            return {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            };
+            return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
         }
+
+        // ============ CURSOR ============
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX; mouseY = e.clientY;
+            dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
+        });
+        function animateRing() {
+            ringX += (mouseX - ringX) * 0.12; ringY += (mouseY - ringY) * 0.12;
+            ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
+            requestAnimationFrame(animateRing);
+        }
+        animateRing();
 
         // ============ NAVEGACION ============
         function mostrarSeccion(nombre, event) {
             if (event) event.preventDefault();
             document.querySelectorAll('.seccion').forEach(s => s.classList.add('hidden'));
             document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(`seccion-${nombre}`).classList.remove('hidden');
+            const seccion = document.getElementById(`seccion-${nombre}`);
+            if (seccion) seccion.classList.remove('hidden');
             if (event && event.target) event.target.classList.add('active');
 
             if (nombre === 'calendario') iniciarCalendario();
             if (nombre === 'turnos') cargarTurnos();
+            if (nombre === 'horarios') cargarHorarios();
             if (nombre === 'servicios') cargarServicios();
             if (nombre === 'clientes') cargarClientes();
             if (nombre === 'estadisticas') cargarEstadisticas();
-            if (nombre === 'horarios') cargarHorarios();
         }
 
         // ============ CALENDARIO ============
         async function iniciarCalendario() {
             try {
-                const res = await fetch(`${API_BASE}/api/turnos/?limit=500`, {
-                    headers: authHeaders()
-                });
+                const res = await fetch(`${API_BASE}/api/turnos/?limit=500`, { headers: authHeaders() });
+                if (!res.ok) throw new Error('Error al cargar turnos');
                 const turnos = await res.json();
 
                 const hoy = new Date().toISOString().split('T')[0];
-                document.getElementById('stat-hoy').textContent =
-                    turnos.filter(t => t.fecha === hoy).length;
-                document.getElementById('stat-pendientes').textContent =
-                    turnos.filter(t => t.estado === 'pendiente').length;
-                document.getElementById('stat-completados').textContent =
-                    turnos.filter(t => t.estado === 'completado').length;
+                document.getElementById('stat-hoy').textContent = turnos.filter(t => t.fecha === hoy).length;
+                document.getElementById('stat-pendientes').textContent = turnos.filter(t => t.estado === 'pendiente').length;
+                document.getElementById('stat-completados').textContent = turnos.filter(t => t.estado === 'completado').length;
                 document.getElementById('stat-total').textContent = turnos.length;
 
                 const eventos = turnos.map(t => ({
@@ -548,30 +477,18 @@
                     extendedProps: { turno: t }
                 }));
 
-                if (calendario) {
-                    calendario.destroy();
-                    calendario = null;
-                }
+                if (calendario) { calendario.destroy(); calendario = null; }
 
                 const calEl = document.getElementById('calendario');
                 calendario = new FullCalendar.Calendar(calEl, {
                     initialView: 'dayGridMonth',
                     locale: 'es',
-                    headerToolbar: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                    },
+                    headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay' },
                     events: eventos,
-                    eventClick: function(info) {
-                        mostrarModalTurno(info.event.extendedProps.turno);
-                    },
-                    height: 'auto',
-                    aspectRatio: 1.8
+                    eventClick: (info) => mostrarModalTurno(info.event.extendedProps.turno),
+                    height: 'auto', aspectRatio: 1.8
                 });
-
                 calendario.render();
-
             } catch (err) {
                 console.error('Error cargando calendario:', err);
             }
@@ -579,159 +496,269 @@
 
         // ============ MODAL TURNO ============
         function mostrarModalTurno(turno) {
-            turnoSeleccionado = turno;
             const contenido = document.getElementById('modal-contenido');
             const acciones = document.getElementById('modal-acciones');
-
             contenido.innerHTML = `
                 <div class="flex justify-between border-b border-gris-medio pb-4">
                     <span class="text-gris-claro">Estado</span>
                     <span class="badge badge-${turno.estado}">${turno.estado}</span>
                 </div>
-                <div class="flex justify-between">
-                    <span class="text-gris-claro">Cliente</span>
-                    <span class="text-blanco">${turno.cliente?.nombre || ''} ${turno.cliente?.apellido || ''}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gris-claro">Telefono</span>
-                    <span class="text-blanco">${turno.cliente?.telefono || '-'}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gris-claro">Servicio</span>
-                    <span class="text-blanco">${turno.servicio?.nombre || '-'}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gris-claro">Fecha</span>
-                    <span class="text-blanco">${turno.fecha}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gris-claro">Hora</span>
-                    <span class="text-blanco">${turno.hora ? turno.hora.slice(0,5) : '-'} hs</span>
-                </div>
-                ${turno.notas ? `
-                <div class="flex justify-between">
-                    <span class="text-gris-claro">Notas</span>
-                    <span class="text-blanco">${turno.notas}</span>
-                </div>` : ''}
+                <div class="flex justify-between"><span class="text-gris-claro">Cliente</span><span class="text-blanco">${turno.cliente?.nombre || ''} ${turno.cliente?.apellido || ''}</span></div>
+                <div class="flex justify-between"><span class="text-gris-claro">Telefono</span><span class="text-blanco">${turno.cliente?.telefono || '-'}</span></div>
+                <div class="flex justify-between"><span class="text-gris-claro">Servicio</span><span class="text-blanco">${turno.servicio?.nombre || '-'}</span></div>
+                <div class="flex justify-between"><span class="text-gris-claro">Fecha</span><span class="text-blanco">${turno.fecha}</span></div>
+                <div class="flex justify-between"><span class="text-gris-claro">Hora</span><span class="text-blanco">${turno.hora ? turno.hora.slice(0,5) : '-'} hs</span></div>
+                ${turno.notas ? `<div class="flex justify-between"><span class="text-gris-claro">Notas</span><span class="text-blanco">${turno.notas}</span></div>` : ''}
             `;
-
             acciones.innerHTML = '';
             if (turno.estado === 'pendiente') {
-                acciones.innerHTML += `
-                    <button onclick="cambiarEstado(${turno.id}, 'confirmado')"
-                        class="btn-solid text-xs py-2 px-4">Confirmar</button>
-                    <button onclick="cambiarEstado(${turno.id}, 'cancelado')"
-                        class="btn-ghost text-xs py-2 px-4">Cancelar</button>`;
+                acciones.innerHTML = `<button onclick="cambiarEstado(${turno.id},'confirmado')" class="btn-solid text-xs py-2 px-4">Confirmar</button><button onclick="cambiarEstado(${turno.id},'cancelado')" class="btn-ghost text-xs py-2 px-4">Cancelar</button>`;
             }
             if (turno.estado === 'confirmado') {
-                acciones.innerHTML += `
-                    <button onclick="cambiarEstado(${turno.id}, 'completado')"
-                        class="btn-solid text-xs py-2 px-4">Completar</button>
-                    <button onclick="cambiarEstado(${turno.id}, 'cancelado')"
-                        class="btn-ghost text-xs py-2 px-4">Cancelar</button>`;
+                acciones.innerHTML = `<button onclick="cambiarEstado(${turno.id},'completado')" class="btn-solid text-xs py-2 px-4">Completar</button><button onclick="cambiarEstado(${turno.id},'cancelado')" class="btn-ghost text-xs py-2 px-4">Cancelar</button>`;
             }
-
             document.getElementById('modal-turno').classList.remove('hidden');
         }
 
-        function cerrarModal() {
-            document.getElementById('modal-turno').classList.add('hidden');
-            turnoSeleccionado = null;
-        }
+        function cerrarModal() { document.getElementById('modal-turno').classList.add('hidden'); }
 
         async function cambiarEstado(turnoId, nuevoEstado) {
             try {
                 const res = await fetch(`${API_BASE}/api/turnos/${turnoId}`, {
-                    method: 'PUT',
-                    headers: authHeaders(),
-                    body: JSON.stringify({ estado: nuevoEstado })
+                    method: 'PUT', headers: authHeaders(), body: JSON.stringify({ estado: nuevoEstado })
                 });
-                if (res.ok) {
-                    cerrarModal();
-                    calendario = null;
-                    iniciarCalendario();
-                }
-            } catch (err) {
-                console.error(err);
-            }
+                if (res.ok) { cerrarModal(); calendario = null; iniciarCalendario(); cargarTurnos(); }
+            } catch (err) { console.error(err); }
         }
 
         // ============ TURNOS ============
         async function cargarTurnos() {
             try {
-                const res = await fetch(`${API_BASE}/api/turnos/?limit=200`, {
-                    headers: authHeaders()
-                });
+                const res = await fetch(`${API_BASE}/api/turnos/?limit=200`, { headers: authHeaders() });
+                if (!res.ok) throw new Error('Error');
                 const turnos = await res.json();
                 const tbody = document.getElementById('turnos-body');
-
                 if (turnos.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="text-center py-12 text-gris-claro">No hay turnos registrados</td></tr>';
                     return;
                 }
-
                 tbody.innerHTML = turnos.map(t => `
                     <tr class="border-t border-gris-medio hover:bg-gris-oscuro transition-colors">
-                        <td class="px-6 py-4 text-blanco">
-                            ${t.cliente?.nombre || '-'} ${t.cliente?.apellido || ''}
-                        </td>
+                        <td class="px-6 py-4 text-blanco">${t.cliente?.nombre || '-'} ${t.cliente?.apellido || ''}</td>
                         <td class="px-6 py-4 text-gris-claro">${t.servicio?.nombre || '-'}</td>
                         <td class="px-6 py-4 text-gris-claro">${t.fecha}</td>
                         <td class="px-6 py-4 text-gris-claro">${t.hora ? t.hora.slice(0,5) : '-'} hs</td>
-                        <td class="px-6 py-4">
-                            <span class="badge badge-${t.estado}">${t.estado}</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <button onclick='mostrarModalTurno(${JSON.stringify(t).replace(/'/g, "&#39;")})'
-                                class="text-xs text-dorado hover:text-dorado-claro tracking-wider">
-                                Ver
-                            </button>
-                        </td>
+                        <td class="px-6 py-4"><span class="badge badge-${t.estado}">${t.estado}</span></td>
+                        <td class="px-6 py-4"><button onclick='mostrarModalTurno(${JSON.stringify(t).replace(/'/g,"&#39;")})' class="text-xs text-dorado hover:text-dorado-claro tracking-wider">Ver</button></td>
                     </tr>
                 `).join('');
-            } catch (err) {
-                console.error('Error cargando turnos:', err);
+            } catch (err) { console.error('Error cargando turnos:', err); }
+        }
+
+        // Formulario turno
+        function mostrarFormTurno() { document.getElementById('form-turno').classList.remove('hidden'); cargarServiciosSelector(); }
+        function ocultarFormTurno() {
+            document.getElementById('form-turno').classList.add('hidden');
+            clienteIdTurno = null;
+            ['turno-email','turno-nombre','turno-apellido','turno-telefono','turno-notas'].forEach(id => { document.getElementById(id).value = ''; });
+            document.getElementById('turno-cliente-nombre').textContent = '';
+            document.getElementById('turno-servicio').value = '';
+            document.getElementById('turno-fecha').value = '';
+            document.getElementById('turno-hora').innerHTML = '<option value="">Primero selecciona fecha y servicio</option>';
+            document.getElementById('turno-mensaje').classList.add('hidden');
+        }
+
+        async function cargarServiciosSelector() {
+            const res = await fetch(`${API_BASE}/api/servicios/`);
+            const servicios = await res.json();
+            document.getElementById('turno-servicio').innerHTML = '<option value="">Selecciona un servicio</option>' +
+                servicios.map(s => `<option value="${s.id}">${s.nombre} ($${Number(s.precio).toLocaleString('es-AR')} - ${s.duracion} min)</option>`).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const emailInput = document.getElementById('turno-email');
+            if (emailInput) {
+                emailInput.addEventListener('blur', async () => {
+                    const email = emailInput.value.trim();
+                    if (!email) return;
+                    try {
+                        const res = await fetch(`${API_BASE}/api/clientes/buscar/email/${encodeURIComponent(email)}`, { headers: authHeaders() });
+                        if (res.ok) {
+                            const cliente = await res.json();
+                            clienteIdTurno = cliente.id;
+                            document.getElementById('turno-cliente-nombre').textContent = `Cliente encontrado: ${cliente.nombre} ${cliente.apellido}`;
+                            document.getElementById('turno-nombre').value = cliente.nombre;
+                            document.getElementById('turno-apellido').value = cliente.apellido;
+                            document.getElementById('turno-telefono').value = cliente.telefono;
+                        } else {
+                            clienteIdTurno = null;
+                            document.getElementById('turno-cliente-nombre').textContent = 'Cliente nuevo - se creara al guardar';
+                        }
+                    } catch (err) { clienteIdTurno = null; }
+                });
             }
+
+            const fechaInput = document.getElementById('turno-fecha');
+            const servicioSelect = document.getElementById('turno-servicio');
+            if (fechaInput) fechaInput.addEventListener('change', cargarHorasTurno);
+            if (servicioSelect) servicioSelect.addEventListener('change', cargarHorasTurno);
+        });
+
+        async function cargarHorasTurno() {
+            const fecha = document.getElementById('turno-fecha').value;
+            const servicioId = document.getElementById('turno-servicio').value;
+            const horaSelect = document.getElementById('turno-hora');
+            if (!fecha || !servicioId) return;
+            horaSelect.innerHTML = '<option value="">Cargando...</option>';
+            try {
+                const res = await fetch(`${API_BASE}/api/turnos/disponibles/${fecha}/${servicioId}`);
+                const data = await res.json();
+                const horarios = data.horarios_disponibles || [];
+                horaSelect.innerHTML = horarios.length === 0
+                    ? '<option value="">Sin horarios disponibles</option>'
+                    : '<option value="">Selecciona un horario</option>' + horarios.map(h => `<option value="${h}">${h}</option>`).join('');
+            } catch (err) { horaSelect.innerHTML = '<option value="">Error al cargar horarios</option>'; }
+        }
+
+        async function crearTurnoAdmin() {
+            const email = document.getElementById('turno-email').value.trim();
+            const nombre = document.getElementById('turno-nombre').value.trim();
+            const apellido = document.getElementById('turno-apellido').value.trim();
+            const telefono = document.getElementById('turno-telefono').value.trim();
+            const servicioId = document.getElementById('turno-servicio').value;
+            const fecha = document.getElementById('turno-fecha').value;
+            const hora = document.getElementById('turno-hora').value;
+            const notas = document.getElementById('turno-notas').value.trim();
+            const mensajeDiv = document.getElementById('turno-mensaje');
+
+            const mostrarError = (msg) => {
+                mensajeDiv.classList.remove('hidden');
+                mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
+                mensajeDiv.textContent = msg;
+            };
+
+            if (!email || !servicioId || !fecha || !hora) { mostrarError('Completa todos los campos obligatorios.'); return; }
+
+            try {
+                let clienteId = clienteIdTurno;
+                if (!clienteId) {
+                    if (!nombre || !apellido || !telefono) { mostrarError('El cliente no existe. Completa nombre, apellido y telefono.'); return; }
+                    const clienteRes = await fetch(`${API_BASE}/api/clientes/`, {
+                        method: 'POST', headers: authHeaders(),
+                        body: JSON.stringify({ nombre, apellido, email, telefono })
+                    });
+                    if (clienteRes.ok) { clienteId = (await clienteRes.json()).id; }
+                    else { mostrarError((await clienteRes.json()).detail || 'Error al crear cliente.'); return; }
+                }
+
+                const turnoRes = await fetch(`${API_BASE}/api/turnos/`, {
+                    method: 'POST', headers: authHeaders(),
+                    body: JSON.stringify({ cliente_id: clienteId, servicio_id: parseInt(servicioId), fecha, hora: hora + ':00', notas: notas || null })
+                });
+
+                if (turnoRes.ok) {
+                    mensajeDiv.classList.remove('hidden');
+                    mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-dorado text-dorado';
+                    mensajeDiv.textContent = `Turno creado correctamente para el ${fecha} a las ${hora} hs.`;
+                    setTimeout(() => { ocultarFormTurno(); cargarTurnos(); calendario = null; iniciarCalendario(); }, 2000);
+                } else { mostrarError((await turnoRes.json()).detail || 'Error al crear el turno.'); }
+            } catch (err) { document.getElementById('turno-mensaje').classList.remove('hidden'); document.getElementById('turno-mensaje').className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400'; document.getElementById('turno-mensaje').textContent = 'Error de conexion.'; }
+        }
+
+        // ============ HORARIOS ============
+        function mostrarFormHorario() { document.getElementById('form-horario').classList.remove('hidden'); }
+        function ocultarFormHorario() {
+            document.getElementById('form-horario').classList.add('hidden');
+            document.getElementById('horario-dia').value = '0';
+            document.getElementById('horario-inicio').value = '';
+            document.getElementById('horario-fin').value = '';
+            document.getElementById('horario-mensaje').classList.add('hidden');
+        }
+
+        async function cargarHorarios() {
+            try {
+                const res = await fetch(`${API_BASE}/api/horarios/`);
+                if (!res.ok) throw new Error('Error');
+                const horarios = await res.json();
+                const tbody = document.getElementById('horarios-body');
+                if (horarios.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-12 text-gris-claro">No hay horarios configurados</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = horarios.map(h => `
+                    <tr class="border-t border-gris-medio hover:bg-gris-oscuro transition-colors">
+                        <td class="px-6 py-4 text-blanco font-medium">${DIAS[h.dia_semana] || h.dia_semana}</td>
+                        <td class="px-6 py-4 text-gris-claro">${h.hora_inicio}</td>
+                        <td class="px-6 py-4 text-gris-claro">${h.hora_fin}</td>
+                        <td class="px-6 py-4"><span class="badge ${h.activo ? 'badge-activo' : 'badge-inactivo'}">${h.activo ? 'Activo' : 'Inactivo'}</span></td>
+                        <td class="px-6 py-4"><button onclick="eliminarHorario(${h.id})" class="text-xs text-red-400 hover:text-red-300 tracking-wider">Eliminar</button></td>
+                    </tr>
+                `).join('');
+            } catch (err) { console.error('Error cargando horarios:', err); }
+        }
+
+        async function crearHorario() {
+            const dia = document.getElementById('horario-dia').value;
+            const inicio = document.getElementById('horario-inicio').value;
+            const fin = document.getElementById('horario-fin').value;
+            const mensajeDiv = document.getElementById('horario-mensaje');
+
+            const mostrarError = (msg) => {
+                mensajeDiv.classList.remove('hidden');
+                mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
+                mensajeDiv.textContent = msg;
+            };
+
+            if (!inicio || !fin) { mostrarError('Completa la hora de inicio y fin.'); return; }
+            if (inicio >= fin) { mostrarError('La hora de fin debe ser posterior a la hora de inicio.'); return; }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/horarios/`, {
+                    method: 'POST', headers: authHeaders(),
+                    body: JSON.stringify({ dia_semana: parseInt(dia), hora_inicio: inicio + ':00', hora_fin: fin + ':00' })
+                });
+                if (res.ok) {
+                    mensajeDiv.classList.remove('hidden');
+                    mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-dorado text-dorado';
+                    mensajeDiv.textContent = `Horario para ${DIAS[dia]} creado correctamente.`;
+                    setTimeout(() => { ocultarFormHorario(); cargarHorarios(); }, 1500);
+                } else { mostrarError((await res.json()).detail || 'Error al crear horario.'); }
+            } catch (err) { mostrarError('Error de conexion.'); }
+        }
+
+        async function eliminarHorario(id) {
+            if (!confirm('Eliminar este horario?')) return;
+            try {
+                await fetch(`${API_BASE}/api/horarios/${id}`, { method: 'DELETE', headers: authHeaders() });
+                cargarHorarios();
+            } catch (err) { console.error(err); }
         }
 
         // ============ SERVICIOS ============
         async function cargarServicios() {
             try {
                 const res = await fetch(`${API_BASE}/api/servicios/`);
+                if (!res.ok) throw new Error('Error');
                 const servicios = await res.json();
                 const tbody = document.getElementById('servicios-body');
-
                 if (servicios.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="5" class="text-center py-12 text-gris-claro">No hay servicios</td></tr>';
                     return;
                 }
-
                 tbody.innerHTML = servicios.map(s => `
                     <tr class="border-t border-gris-medio hover:bg-gris-oscuro transition-colors">
                         <td class="px-6 py-4 text-blanco font-medium">${s.nombre}</td>
                         <td class="px-6 py-4 text-gris-claro">${s.descripcion || '-'}</td>
                         <td class="px-6 py-4 text-gris-claro">${s.duracion} min</td>
                         <td class="px-6 py-4 text-dorado">$${Number(s.precio).toLocaleString('es-AR')}</td>
-                        <td class="px-6 py-4">
-                            <button onclick="eliminarServicio(${s.id})"
-                                class="text-xs text-red-400 hover:text-red-300 tracking-wider">
-                                Eliminar
-                            </button>
-                        </td>
+                        <td class="px-6 py-4"><button onclick="eliminarServicio(${s.id})" class="text-xs text-red-400 hover:text-red-300 tracking-wider">Eliminar</button></td>
                     </tr>
                 `).join('');
-            } catch (err) {
-                console.error('Error cargando servicios:', err);
-            }
+            } catch (err) { console.error('Error cargando servicios:', err); }
         }
 
-        function mostrarFormServicio() {
-            document.getElementById('form-servicio').classList.remove('hidden');
-        }
-
-        function ocultarFormServicio() {
-            document.getElementById('form-servicio').classList.add('hidden');
-        }
+        function mostrarFormServicio() { document.getElementById('form-servicio').classList.remove('hidden'); }
+        function ocultarFormServicio() { document.getElementById('form-servicio').classList.add('hidden'); }
 
         async function crearServicio() {
             const data = {
@@ -741,60 +768,40 @@
                 descripcion: document.getElementById('serv-descripcion').value
             };
             try {
-                const res = await fetch(`${API_BASE}/api/servicios/`, {
-                    method: 'POST',
-                    headers: authHeaders(),
-                    body: JSON.stringify(data)
-                });
-                if (res.ok) {
-                    ocultarFormServicio();
-                    cargarServicios();
-                }
-            } catch (err) {
-                console.error('Error creando servicio:', err);
-            }
+                const res = await fetch(`${API_BASE}/api/servicios/`, { method: 'POST', headers: authHeaders(), body: JSON.stringify(data) });
+                if (res.ok) { ocultarFormServicio(); cargarServicios(); }
+                else { alert((await res.json()).detail || 'Error al crear servicio.'); }
+            } catch (err) { console.error(err); }
         }
 
         async function eliminarServicio(id) {
             if (!confirm('Eliminar este servicio?')) return;
             try {
-                await fetch(`${API_BASE}/api/servicios/${id}`, {
-                    method: 'DELETE',
-                    headers: authHeaders()
-                });
+                await fetch(`${API_BASE}/api/servicios/${id}`, { method: 'DELETE', headers: authHeaders() });
                 cargarServicios();
-            } catch (err) {
-                console.error('Error eliminando servicio:', err);
-            }
+            } catch (err) { console.error(err); }
         }
 
         // ============ CLIENTES ============
         async function cargarClientes() {
             try {
-                const res = await fetch(`${API_BASE}/api/clientes/`, {
-                    headers: authHeaders()
-                });
+                const res = await fetch(`${API_BASE}/api/clientes/`, { headers: authHeaders() });
+                if (!res.ok) throw new Error('Error');
                 const clientes = await res.json();
                 const tbody = document.getElementById('clientes-body');
-
                 if (clientes.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="4" class="text-center py-12 text-gris-claro">No hay clientes registrados</td></tr>';
                     return;
                 }
-
                 tbody.innerHTML = clientes.map(c => `
                     <tr class="border-t border-gris-medio hover:bg-gris-oscuro transition-colors">
                         <td class="px-6 py-4 text-blanco">${c.nombre} ${c.apellido}</td>
                         <td class="px-6 py-4 text-gris-claro">${c.email}</td>
                         <td class="px-6 py-4 text-gris-claro">${c.telefono}</td>
-                        <td class="px-6 py-4 text-gris-claro">
-                            ${new Date(c.fecha_creacion).toLocaleDateString('es-AR')}
-                        </td>
+                        <td class="px-6 py-4 text-gris-claro">${new Date(c.fecha_creacion).toLocaleDateString('es-AR')}</td>
                     </tr>
                 `).join('');
-            } catch (err) {
-                console.error('Error cargando clientes:', err);
-            }
+            } catch (err) { console.error('Error cargando clientes:', err); }
         }
 
         // ============ ESTADISTICAS ============
@@ -805,19 +812,13 @@
                     fetch(`${API_BASE}/api/clientes/`, { headers: authHeaders() }),
                     fetch(`${API_BASE}/api/servicios/`)
                 ]);
-
+                if (!turnosRes.ok || !clientesRes.ok || !serviciosRes.ok) throw new Error('Error en alguna peticion');
                 const turnos = await turnosRes.json();
                 const clientes = await clientesRes.json();
                 const servicios = await serviciosRes.json();
 
-                const porEstado = turnos.reduce((acc, t) => {
-                    acc[t.estado] = (acc[t.estado] || 0) + 1;
-                    return acc;
-                }, {});
-
-                const ingresos = turnos
-                    .filter(t => t.estado === 'completado')
-                    .reduce((sum, t) => sum + Number(t.servicio?.precio || 0), 0);
+                const porEstado = turnos.reduce((acc, t) => { acc[t.estado] = (acc[t.estado] || 0) + 1; return acc; }, {});
+                const ingresos = turnos.filter(t => t.estado === 'completado').reduce((sum, t) => sum + Number(t.servicio?.precio || 0), 0);
 
                 document.getElementById('contenido-estadisticas').innerHTML = `
                     <div class="border border-gris-medio p-8">
@@ -826,7 +827,7 @@
                             ${Object.entries(porEstado).map(([estado, cant]) => `
                                 <div class="flex justify-between items-center">
                                     <span class="badge badge-${estado}">${estado}</span>
-                                    <span class="font-serif text-2xl text-blanco">${cant}</span>
+                                    <span style="font-family:'Cormorant Garamond',serif;font-weight:300;" class="text-2xl text-blanco">${cant}</span>
                                 </div>
                             `).join('')}
                         </div>
@@ -834,30 +835,14 @@
                     <div class="border border-gris-medio p-8">
                         <p class="section-subtitle">Resumen general</p>
                         <div class="space-y-4">
-                            <div class="flex justify-between">
-                                <span class="text-gris-claro text-sm">Total clientes</span>
-                                <span class="font-serif text-2xl text-dorado">${clientes.length}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gris-claro text-sm">Servicios activos</span>
-                                <span class="font-serif text-2xl text-dorado">${servicios.length}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gris-claro text-sm">Total turnos</span>
-                                <span class="font-serif text-2xl text-dorado">${turnos.length}</span>
-                            </div>
-                            <div class="flex justify-between border-t border-gris-medio pt-4">
-                                <span class="text-gris-claro text-sm">Ingresos completados</span>
-                                <span class="font-serif text-2xl text-dorado">
-                                    $${ingresos.toLocaleString('es-AR')}
-                                </span>
-                            </div>
+                            <div class="flex justify-between"><span class="text-gris-claro text-sm">Total clientes</span><span style="font-family:'Cormorant Garamond',serif;font-weight:300;" class="text-2xl text-dorado">${clientes.length}</span></div>
+                            <div class="flex justify-between"><span class="text-gris-claro text-sm">Servicios activos</span><span style="font-family:'Cormorant Garamond',serif;font-weight:300;" class="text-2xl text-dorado">${servicios.length}</span></div>
+                            <div class="flex justify-between"><span class="text-gris-claro text-sm">Total turnos</span><span style="font-family:'Cormorant Garamond',serif;font-weight:300;" class="text-2xl text-dorado">${turnos.length}</span></div>
+                            <div class="flex justify-between border-t border-gris-medio pt-4"><span class="text-gris-claro text-sm">Ingresos completados</span><span style="font-family:'Cormorant Garamond',serif;font-weight:300;" class="text-2xl text-dorado">$${ingresos.toLocaleString('es-AR')}</span></div>
                         </div>
                     </div>
                 `;
-            } catch (err) {
-                console.error('Error cargando estadisticas:', err);
-            }
+            } catch (err) { console.error('Error cargando estadisticas:', err); document.getElementById('contenido-estadisticas').innerHTML = '<p class="text-red-400 text-sm">Error al cargar estadisticas. Verifica tu sesion.</p>'; }
         }
 
         // ============ LOGOUT ============
@@ -868,290 +853,7 @@
         }
 
         // Iniciar al cargar
-        document.addEventListener('DOMContentLoaded', () => {
-            iniciarCalendario();
-        });
-// ============ FORMULARIO NUEVO TURNO ============
-let clienteIdTurno = null;
-
-function mostrarFormTurno() {
-    document.getElementById('form-turno').classList.remove('hidden');
-    cargarServiciosSelector();
-}
-
-function ocultarFormTurno() {
-    document.getElementById('form-turno').classList.add('hidden');
-    clienteIdTurno = null;
-    document.getElementById('turno-cliente-nombre').textContent = '';
-    document.getElementById('turno-email').value = '';
-    document.getElementById('turno-nombre').value = '';
-    document.getElementById('turno-apellido').value = '';
-    document.getElementById('turno-telefono').value = '';
-    document.getElementById('turno-servicio').value = '';
-    document.getElementById('turno-fecha').value = '';
-    document.getElementById('turno-hora').innerHTML = '<option value="">Primero selecciona fecha y servicio</option>';
-    document.getElementById('turno-notas').value = '';
-    document.getElementById('turno-mensaje').classList.add('hidden');
-}
-
-async function cargarServiciosSelector() {
-    const res = await fetch(`${API_BASE}/api/servicios/`);
-    const servicios = await res.json();
-    const select = document.getElementById('turno-servicio');
-    select.innerHTML = '<option value="">Selecciona un servicio</option>' +
-        servicios.map(s => `<option value="${s.id}">${s.nombre} - $${Number(s.precio).toLocaleString('es-AR')} (${s.duracion} min)</option>`).join('');
-}
-
-// Buscar cliente por email al salir del campo
-document.getElementById('turno-email')?.addEventListener('blur', async () => {
-    const email = document.getElementById('turno-email').value.trim();
-    if (!email) return;
-    try {
-        const res = await fetch(`${API_BASE}/api/clientes/buscar/email/${encodeURIComponent(email)}`, {
-            headers: authHeaders()
-        });
-        if (res.ok) {
-            const cliente = await res.json();
-            clienteIdTurno = cliente.id;
-            document.getElementById('turno-cliente-nombre').textContent =
-                `Cliente encontrado: ${cliente.nombre} ${cliente.apellido}`;
-            document.getElementById('turno-nombre').value = cliente.nombre;
-            document.getElementById('turno-apellido').value = cliente.apellido;
-            document.getElementById('turno-telefono').value = cliente.telefono;
-        } else {
-            clienteIdTurno = null;
-            document.getElementById('turno-cliente-nombre').textContent =
-                'Cliente nuevo - se creara al guardar';
-        }
-    } catch (err) {
-        clienteIdTurno = null;
-    }
-});
-
-// Cargar horarios disponibles cuando cambia fecha o servicio
-document.getElementById('turno-fecha')?.addEventListener('change', cargarHorasTurno);
-document.getElementById('turno-servicio')?.addEventListener('change', cargarHorasTurno);
-
-async function cargarHorasTurno() {
-    const fecha = document.getElementById('turno-fecha').value;
-    const servicioId = document.getElementById('turno-servicio').value;
-    const horaSelect = document.getElementById('turno-hora');
-
-    if (!fecha || !servicioId) return;
-
-    horaSelect.innerHTML = '<option value="">Cargando...</option>';
-    try {
-        const res = await fetch(`${API_BASE}/api/turnos/disponibles/${fecha}/${servicioId}`);
-        const data = await res.json();
-        const horarios = data.horarios_disponibles || [];
-        if (horarios.length === 0) {
-            horaSelect.innerHTML = '<option value="">Sin horarios disponibles</option>';
-        } else {
-            horaSelect.innerHTML = '<option value="">Selecciona un horario</option>' +
-                horarios.map(h => `<option value="${h}">${h}</option>`).join('');
-        }
-    } catch (err) {
-        horaSelect.innerHTML = '<option value="">Error al cargar horarios</option>';
-    }
-}
-
-async function crearTurnoAdmin() {
-    const email = document.getElementById('turno-email').value.trim();
-    const nombre = document.getElementById('turno-nombre').value.trim();
-    const apellido = document.getElementById('turno-apellido').value.trim();
-    const telefono = document.getElementById('turno-telefono').value.trim();
-    const servicioId = document.getElementById('turno-servicio').value;
-    const fecha = document.getElementById('turno-fecha').value;
-    const hora = document.getElementById('turno-hora').value;
-    const notas = document.getElementById('turno-notas').value.trim();
-    const mensajeDiv = document.getElementById('turno-mensaje');
-
-    if (!email || !servicioId || !fecha || !hora) {
-        mensajeDiv.classList.remove('hidden');
-        mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
-        mensajeDiv.textContent = 'Completa todos los campos obligatorios.';
-        return;
-    }
-
-    try {
-        let clienteId = clienteIdTurno;
-
-        // Si no existe el cliente, crearlo
-        if (!clienteId) {
-            if (!nombre || !apellido || !telefono) {
-                mensajeDiv.classList.remove('hidden');
-                mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
-                mensajeDiv.textContent = 'El cliente no existe. Completa nombre, apellido y telefono.';
-                return;
-            }
-            const clienteRes = await fetch(`${API_BASE}/api/clientes/`, {
-                method: 'POST',
-                headers: authHeaders(),
-                body: JSON.stringify({ nombre, apellido, email, telefono })
-            });
-            if (clienteRes.ok) {
-                const cliente = await clienteRes.json();
-                clienteId = cliente.id;
-            } else {
-                const err = await clienteRes.json();
-                mensajeDiv.classList.remove('hidden');
-                mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
-                mensajeDiv.textContent = err.detail || 'Error al crear cliente.';
-                return;
-            }
-        }
-
-        // Crear el turno
-        const turnoRes = await fetch(`${API_BASE}/api/turnos/`, {
-            method: 'POST',
-            headers: authHeaders(),
-            body: JSON.stringify({
-                cliente_id: clienteId,
-                servicio_id: parseInt(servicioId),
-                fecha,
-                hora: hora + ':00',
-                notas: notas || null
-            })
-        });
-
-        if (turnoRes.ok) {
-            mensajeDiv.classList.remove('hidden');
-            mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-dorado text-dorado';
-            mensajeDiv.textContent = `Turno creado correctamente para el ${fecha} a las ${hora} hs.`;
-            setTimeout(() => {
-                ocultarFormTurno();
-                cargarTurnos();
-                calendario = null;
-                iniciarCalendario();
-            }, 2000);
-        } else {
-            const err = await turnoRes.json();
-            mensajeDiv.classList.remove('hidden');
-            mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
-            mensajeDiv.textContent = err.detail || 'Error al crear el turno.';
-        }
-    } catch (err) {
-        mensajeDiv.classList.remove('hidden');
-        mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
-        mensajeDiv.textContent = 'Error de conexion. Intenta nuevamente.';
-    }
-}
-// ============ HORARIOS ============
-const DIAS = {
-    0: 'Lunes', 1: 'Martes', 2: 'Miercoles',
-    3: 'Jueves', 4: 'Viernes', 5: 'Sabado', 6: 'Domingo'
-};
-
-function mostrarFormHorario() {
-    document.getElementById('form-horario').classList.remove('hidden');
-}
-
-function ocultarFormHorario() {
-    document.getElementById('form-horario').classList.add('hidden');
-    document.getElementById('horario-dia').value = '0';
-    document.getElementById('horario-inicio').value = '';
-    document.getElementById('horario-fin').value = '';
-    document.getElementById('horario-mensaje').classList.add('hidden');
-}
-
-async function cargarHorarios() {
-    try {
-        const res = await fetch(`${API_BASE}/api/horarios/`);
-        const horarios = await res.json();
-        const tbody = document.getElementById('horarios-body');
-
-        if (horarios.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-12 text-gris-claro">No hay horarios configurados</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = horarios.map(h => `
-            <tr class="border-t border-gris-medio hover:bg-gris-oscuro transition-colors">
-                <td class="px-6 py-4 text-blanco font-medium">${DIAS[h.dia_semana]}</td>
-                <td class="px-6 py-4 text-gris-claro">${h.hora_inicio}</td>
-                <td class="px-6 py-4 text-gris-claro">${h.hora_fin}</td>
-                <td class="px-6 py-4">
-                    <span class="badge ${h.activo ? 'badge-confirmado' : 'badge-cancelado'}">
-                        ${h.activo ? 'Activo' : 'Inactivo'}
-                    </span>
-                </td>
-                <td class="px-6 py-4">
-                    <button onclick="eliminarHorario(${h.id})"
-                        class="text-xs text-red-400 hover:text-red-300 tracking-wider">
-                        Eliminar
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-    } catch (err) {
-        console.error('Error cargando horarios:', err);
-    }
-}
-
-async function crearHorario() {
-    const dia = document.getElementById('horario-dia').value;
-    const inicio = document.getElementById('horario-inicio').value;
-    const fin = document.getElementById('horario-fin').value;
-    const mensajeDiv = document.getElementById('horario-mensaje');
-
-    if (!inicio || !fin) {
-        mensajeDiv.classList.remove('hidden');
-        mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
-        mensajeDiv.textContent = 'Completa la hora de inicio y fin.';
-        return;
-    }
-
-    if (inicio >= fin) {
-        mensajeDiv.classList.remove('hidden');
-        mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
-        mensajeDiv.textContent = 'La hora de fin debe ser posterior a la hora de inicio.';
-        return;
-    }
-
-    try {
-        const res = await fetch(`${API_BASE}/api/horarios/`, {
-            method: 'POST',
-            headers: authHeaders(),
-            body: JSON.stringify({
-                dia_semana: parseInt(dia),
-                hora_inicio: inicio + ':00',
-                hora_fin: fin + ':00'
-            })
-        });
-
-        if (res.ok) {
-            mensajeDiv.classList.remove('hidden');
-            mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-dorado text-dorado';
-            mensajeDiv.textContent = `Horario para ${DIAS[dia]} creado correctamente.`;
-            setTimeout(() => {
-                ocultarFormHorario();
-                cargarHorarios();
-            }, 1500);
-        } else {
-            const err = await res.json();
-            mensajeDiv.classList.remove('hidden');
-            mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
-            mensajeDiv.textContent = err.detail || 'Error al crear horario.';
-        }
-    } catch (err) {
-        mensajeDiv.classList.remove('hidden');
-        mensajeDiv.className = 'mt-4 text-xs py-3 px-4 border border-red-500 text-red-400';
-        mensajeDiv.textContent = 'Error de conexion.';
-    }
-}
-
-async function eliminarHorario(id) {
-    if (!confirm('Eliminar este horario?')) return;
-    try {
-        await fetch(`${API_BASE}/api/horarios/${id}`, {
-            method: 'DELETE',
-            headers: authHeaders()
-        });
-        cargarHorarios();
-    } catch (err) {
-        console.error('Error eliminando horario:', err);
-    }
-}
+        document.addEventListener('DOMContentLoaded', () => { iniciarCalendario(); });
     </script>
 </body>
 </html>
