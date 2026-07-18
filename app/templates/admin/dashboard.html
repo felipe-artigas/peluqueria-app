@@ -13,18 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
 
     <style>
-        *, *::before, *::after { cursor: none !important; }
-        #cursor-dot {
-            width: 8px; height: 8px; background: #c9a96e; border-radius: 50%;
-            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%); transition: transform 0.1s ease;
-        }
-        #cursor-ring {
-            width: 36px; height: 36px; border: 1px solid rgba(201,169,110,0.4);
-            border-radius: 50%; position: fixed; top: 0; left: 0;
-            pointer-events: none; z-index: 9998; transform: translate(-50%, -50%);
-            transition: all 0.15s ease;
-        }
+
 
         .fc { font-family: 'Jost', sans-serif; }
         .fc-theme-standard td, .fc-theme-standard th { border-color: #2a2a2a; }
@@ -86,9 +75,6 @@
     </style>
 </head>
 <body class="bg-negro text-blanco min-h-screen" style="font-family: 'Jost', sans-serif;">
-
-    <div id="cursor-dot"></div>
-    <div id="cursor-ring"></div>
 
     <div class="flex min-h-screen">
 
@@ -423,21 +409,6 @@
         function authHeaders() {
             return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` };
         }
-
-        // ============ CURSOR ============
-        const dot = document.getElementById('cursor-dot');
-        const ring = document.getElementById('cursor-ring');
-        let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX; mouseY = e.clientY;
-            dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
-        });
-        function animateRing() {
-            ringX += (mouseX - ringX) * 0.12; ringY += (mouseY - ringY) * 0.12;
-            ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
-            requestAnimationFrame(animateRing);
-        }
-        animateRing();
 
         // ============ NAVEGACION ============
         function mostrarSeccion(nombre, event) {
